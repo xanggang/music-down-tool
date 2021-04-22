@@ -10,7 +10,7 @@
 <!--      {{item.name }}-->
 <!--    </div>-->
     <audio controls>
-      <audio class="play" autoplay src="./music.mp3" type="audio/mpeg"></audio>
+      <audio class="play" autoplay src="music.mp3" type="audio/mpeg"></audio>
     </audio>
 
     <a-button @click="handlePlay">当时的</a-button>
