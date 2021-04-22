@@ -11,7 +11,7 @@ global.staticDir = __static // 全局静态文件地址
 console.log(`cache dir: ${global.userDir}`)
 
 protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true }}
+  { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
 app.on('ready', async () => {

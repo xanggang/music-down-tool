@@ -20,7 +20,8 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-extra-semi': 2, // 禁止额外的分号
-    'no-trailing-spaces': 'off'
+    'no-trailing-spaces': 'off',
+    '@typescript-eslint/no-explicit-any': 'off'
   },
 
   overrides: [

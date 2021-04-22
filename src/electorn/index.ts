@@ -1,5 +1,5 @@
-import { BrowserWindow, Menu } from 'electron'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import { BrowserWindow } from 'electron'
+import installExtension from 'electron-devtools-installer'
 import MenuApp from './menu/index'
 import IpcApp from './ipc/index'
 
@@ -85,13 +85,13 @@ export default class ElectronApp {
     win.on('resize', () => {
       if (!win) return
       const data = win.getSize()
-      win.webContents.send('win-resize', {data})
+      win.webContents.send('win-resize', { data })
     })
 
     /**
      * @description 监听新建窗口
      */
-    win.webContents.on('new-window', (event, url) => {
+    win.webContents.on('new-window', (event) => {
       event.preventDefault()
     })
 
