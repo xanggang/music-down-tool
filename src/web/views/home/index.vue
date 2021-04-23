@@ -1,9 +1,12 @@
 <template>
   <div>
-    <h1>这里是首页</h1>
-    <input type="file" id="selectFiles" multiple @change="handleChangeInput">
-    <img :src=" src" alt="">
     <button @click="handleSendIpc"> 发送Ipc消息， 打开文件选择窗口</button>
+    <button @click="handleSelectLocalPath">选择本地音乐文件夹</button>
+    <div style="width: 100%;height: 400px;display: flex; align-items: center; justify-content: center">
+      <audio :src="'local:/' + src" controls="controls">
+        您的浏览器不支持 audio 标签。
+      </audio>
+    </div>
   </div>
 </template>
 
@@ -26,7 +29,21 @@ export default defineComponent({
       this.src = files[0].path
     },
     handleSendIpc () {
-      ipcRenderer.sendSync(IpcEnums.R_CHANG_SYS_SETTING, 'liulanqifasong')
+      ipcRenderer.sendSync(IpcEnums.R_CHANG_SYS_SETTING)
+    },
+    getMusicPath () {
+      return ''
+    },
+    handleSelectLocalPath () {
+      const path = ipcRenderer.sendSync(IpcEnums.R_SAVE_PATH_DIALOG)
+      if (!path) return
+      if (path.length) {
+        console.log(path[0])
+        const list = ipcRenderer.sendSync(IpcEnums.R_GET_DIR_FILE_LIST, path[0])
+        if (list.length) {
+          this.src = list[0].filePath
+        }
+      }
     }
   }
 })

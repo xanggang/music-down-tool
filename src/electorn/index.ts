@@ -1,5 +1,6 @@
 import { BrowserWindow } from 'electron'
 import installExtension from 'electron-devtools-installer'
+import createAsarProtocol from './protocol'
 import MenuApp from './menu/index'
 import IpcApp from './ipc/index'
 import { LowdbSync } from 'lowdb'
@@ -111,6 +112,7 @@ export default class ElectronApp {
    */
   async loadApp () {
     this.db = global.db
+    createAsarProtocol()
     const mainWin = this.createWindow()
     this.ipc = new IpcApp(mainWin)
     await this.initDevTools()

@@ -1,5 +1,6 @@
 import { dialog, ipcMain, OpenDialogSyncOptions, IpcMainEvent, BrowserWindow } from 'electron'
 import * as IpcEnums from './enums'
+import { getDirFiles } from '../fileUtil'
 
 export default class IpcApp {
   win: BrowserWindow
@@ -12,6 +13,7 @@ export default class IpcApp {
   init () {
     this.onShowSavePathDiaLog()
     this.onSendSysConfig()
+    this.onGetDirFile()
   }
 
   onShowSavePathDiaLog () {
@@ -35,10 +37,12 @@ export default class IpcApp {
     ipcMain.on(IpcEnums.R_SAVE_PATH_DIALOG, showSavePathDiaLog)
   }
 
+  // 主进程推送相关配置
   changeSysConfig () {
     this.win.webContents.send(IpcEnums.M_CHANG_SYS_SETTING, global.db.get('sysConfig').value())
   }
 
+  // 渲染进程主动获取相关配置
   onSendSysConfig () {
     ipcMain.on(IpcEnums.R_CHANG_SYS_SETTING, (event: IpcMainEvent) => {
       const config = global.db.get('sysConfig').value()
@@ -49,5 +53,16 @@ export default class IpcApp {
         console.log(err)
       }
     })
+  }
+
+  //
+  onGetDirFile () {
+    function handle (event: IpcMainEvent, path?: string) {
+      if (!path) return
+      const fileList = getDirFiles('.mp3', path)
+      event.returnValue = fileList
+    }
+
+    ipcMain.on(IpcEnums.R_GET_DIR_FILE_LIST, handle)
   }
 }
