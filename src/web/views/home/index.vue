@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import * as IpcEnums from '@/electorn/ipc/enums1'
+import * as IpcEnums from '@/electorn/ipc/enums'
 const { ipcRenderer } = window.require('electron')
 
 export default defineComponent({
@@ -26,7 +26,7 @@ export default defineComponent({
       this.src = files[0].path
     },
     handleSendIpc () {
-      ipcRenderer.sendSync(IpcEnums.SAVE_PATH_DIALOG)
+      ipcRenderer.sendSync(IpcEnums.R_CHANG_SYS_SETTING, 'liulanqifasong')
     }
   }
 })

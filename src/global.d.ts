@@ -1,25 +1,18 @@
 declare namespace NodeJS {
     import BrowserWindow = Electron.BrowserWindow
-
+  import { IDbType } from './electorn/db/index'
     type configType = {
         configUrl: string;
         microApi: string;
     }
     interface Global {
-        launcherVersion: string;
-        launcher: any;
-        isDevelopment: boolean;
-        isServer: boolean;
-        isInSingleMode: boolean;
-        isTest: boolean;
-        env: string;
-        currentVersion: string;
-        successInit: boolean;
-        userDir: string;
-        emit: EventEmitter;
-        staticDir: string;
-        launcherStaticDir: string;
-        config: configTypel;
+      env: string;
+      isDevelopment: boolean;
+      staticDir: string;
+      userFilePath: string;
+      userBasePath: string;
+      sysConfig: object;
+      db: IDbType;
     }
 }
 

@@ -1,14 +1,17 @@
 'use strict'
 import { app, protocol } from 'electron'
 import ElectronApp from './electorn/index'
+import initDb from './electorn/db/index'
 
 global.env = process.env.NODE_ENV || 'dev'
 global.isDevelopment = global.env !== 'production' // 是否是开发模式
-global.userDir = app.getPath('userData') // 获取用户地址路径
-global.launcherStaticDir = __static // 启动器静态文件地址
+global.userBasePath = app.getPath('userData') // 获取用户地址路径
 global.staticDir = __static // 全局静态文件地址
+global.userFilePath = ''
+global.sysConfig = {}
+global.db = initDb()
 
-console.log(`cache dir: ${global.userDir}`)
+console.log(`cache dir: ${global.userBasePath}`)
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }

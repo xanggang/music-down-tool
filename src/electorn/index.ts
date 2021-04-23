@@ -2,24 +2,26 @@ import { BrowserWindow } from 'electron'
 import installExtension from 'electron-devtools-installer'
 import MenuApp from './menu/index'
 import IpcApp from './ipc/index'
+import { LowdbSync } from 'lowdb'
 
 export default class ElectronApp {
   protected isDevToolInit = false // 是否已经启用开发工具
   protected win: BrowserWindow | null = null // 窗口
   protected menu: MenuApp | null = null
   protected ipc: IpcApp | null = null
+  protected db: LowdbSync<any> | null = null
 
   /**
    * @description 注入开发工具
    */
   protected async initDevTools () {
-    if (!this.isDevToolInit && global.isDevelopment && !global.isTest) {
+    if (!this.isDevToolInit && global.isDevelopment) {
       this.isDevToolInit = true
 
       // Install Vue Devtools
       try {
         console.log('下载vue crx 文件')
-        await installExtension('ljjemllljcmogpfapbkkighbhhppjdbg')
+        // await installExtension('ljjemllljcmogpfapbkkighbhhppjdbg')
       } catch (e) {
         console.error('Vue Devtools failed to install:', e.toString())
       }
@@ -49,7 +51,6 @@ export default class ElectronApp {
       // icon: path.join(global.launcherStaticDir, 'icon.png'),
     })
     this.win = win
-    this.ipc = new IpcApp(win)
 
     /**
      * @description 窗口关闭前触发
@@ -109,7 +110,9 @@ export default class ElectronApp {
    * 根据配置加载一个应用
    */
   async loadApp () {
+    this.db = global.db
     const mainWin = this.createWindow()
+    this.ipc = new IpcApp(mainWin)
     await this.initDevTools()
     await this.registerMenu()
     if (global.isDevelopment) {

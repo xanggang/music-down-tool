@@ -1,5 +1,5 @@
 import { dialog, ipcMain, OpenDialogSyncOptions, IpcMainEvent, BrowserWindow } from 'electron'
-import * as IpcEnums from './enums1'
+import * as IpcEnums from './enums'
 
 export default class IpcApp {
   win: BrowserWindow
@@ -10,13 +10,13 @@ export default class IpcApp {
   }
 
   init () {
-    this.showSavePathDiaLog()
+    this.onShowSavePathDiaLog()
+    this.onSendSysConfig()
   }
 
-  showSavePathDiaLog () {
+  onShowSavePathDiaLog () {
     // 显示保存弹框
     function showSavePathDiaLog (event: IpcMainEvent) {
-      console.log('showSavePathDiaLog')
       const options = {
         title: '选择保存路径',
         defaultPath: '',
@@ -32,6 +32,22 @@ export default class IpcApp {
       console.log(request)
     }
 
-    ipcMain.on(IpcEnums.SAVE_PATH_DIALOG, showSavePathDiaLog)
+    ipcMain.on(IpcEnums.R_SAVE_PATH_DIALOG, showSavePathDiaLog)
+  }
+
+  changeSysConfig () {
+    this.win.webContents.send(IpcEnums.M_CHANG_SYS_SETTING, global.db.get('sysConfig').value())
+  }
+
+  onSendSysConfig () {
+    ipcMain.on(IpcEnums.R_CHANG_SYS_SETTING, (event: IpcMainEvent) => {
+      const config = global.db.get('sysConfig').value()
+      event.returnValue = config
+      try {
+        this.changeSysConfig()
+      } catch (err) {
+        console.log(err)
+      }
+    })
   }
 }
