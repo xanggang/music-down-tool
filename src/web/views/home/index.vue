@@ -29,17 +29,18 @@ export default defineComponent({
       this.src = files[0].path
     },
     handleSendIpc () {
-      ipcRenderer.sendSync(IpcEnums.R_CHANG_SYS_SETTING)
+      const path = ipcRenderer.sendSync(IpcEnums.V_SAVE_PATH_DIALOG)
+      console.log(path)
     },
     getMusicPath () {
       return ''
     },
     handleSelectLocalPath () {
-      const path = ipcRenderer.sendSync(IpcEnums.R_SAVE_PATH_DIALOG)
+      const path = ipcRenderer.sendSync(IpcEnums.V_SAVE_PATH_DIALOG)
       if (!path) return
       if (path.length) {
         console.log(path[0])
-        const list = ipcRenderer.sendSync(IpcEnums.R_GET_DIR_FILE_LIST, path[0])
+        const list = ipcRenderer.sendSync(IpcEnums.V_GET_DIR_FILE_LIST, path[0])
         if (list.length) {
           this.src = list[0].filePath
         }

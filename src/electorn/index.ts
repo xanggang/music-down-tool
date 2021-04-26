@@ -4,6 +4,7 @@ import createAsarProtocol from './protocol'
 import MenuApp from './menu/index'
 import IpcApp from './ipc/index'
 import { LowdbSync } from 'lowdb'
+import initIpcEvent from './router'
 
 export default class ElectronApp {
   protected isDevToolInit = false // 是否已经启用开发工具
@@ -114,7 +115,8 @@ export default class ElectronApp {
     this.db = global.db
     createAsarProtocol()
     const mainWin = this.createWindow()
-    this.ipc = new IpcApp(mainWin)
+    initIpcEvent()
+    // this.ipc = new IpcApp(mainWin)
     await this.initDevTools()
     await this.registerMenu()
     if (global.isDevelopment) {

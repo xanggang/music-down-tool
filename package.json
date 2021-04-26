@@ -34,6 +34,7 @@
     "lowdb": "^1.0.0",
     "music-api": "^0.3.11",
     "puppeteer-core": "^9.0.0",
+    "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
     "vue": "3.0.3",
     "vue-router": "^4.0.0-0",

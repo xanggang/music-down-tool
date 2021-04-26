@@ -6,8 +6,9 @@ const { ipcRenderer } = window.require('electron')
  */
 export default function syncElectron (store: Store<any>) {
   ipcRenderer.on(IpcEnums.M_CHANG_SYS_SETTING, function (e: any) {
+    console.log('接收到', IpcEnums.M_CHANG_SYS_SETTING)
     store.commit('setting/SAVE_ELECTRON_CONFIG', e)
   })
-  const res: any = ipcRenderer.sendSync(IpcEnums.R_CHANG_SYS_SETTING)
+  const res: any = ipcRenderer.sendSync(IpcEnums.V_CHANG_SYS_SETTING)
   store.commit('setting/SAVE_ELECTRON_CONFIG', res)
 }
