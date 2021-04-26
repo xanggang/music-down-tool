@@ -16,6 +16,17 @@ export default class BaseController {
     return windows[0]
   }
 
+  /**
+   * 获取WebContents
+   */
+  getWebContents () {
+    const win = this.getBrowserWindow()
+    if (!win) {
+      throw new Error('活跃窗口不存在， 请确认')
+    }
+    return win.webContents
+  }
+
   setWebMsg (type: string, data: any) {
     const win = this.getBrowserWindow()
     if (!win) {

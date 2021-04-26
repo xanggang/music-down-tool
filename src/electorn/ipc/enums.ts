@@ -10,3 +10,6 @@ export const V_CHANG_SYS_SETTING = 'view:chang_sys_setting'
 
 // 获取文件夹下的全部文件
 export const V_GET_DIR_FILE_LIST = 'view:get_dir_file_list'
+
+// 下载一个文件
+export const V_DOWN_FILE = 'view:down_file'
