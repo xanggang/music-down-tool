@@ -1,5 +1,6 @@
 import electron, { App, BrowserWindow } from 'electron'
-import type { IDbType } from '../db/index'
+import type { IDbType } from '@/types/db'
+import type { IcpContentxType } from '@/types/icpContentxType'
 
 /**
  * 基类封装
@@ -7,6 +8,10 @@ import type { IDbType } from '../db/index'
 export default class BaseController {
   db: IDbType = global.db // 数据库
   app: App = electron.app // electron app
+  ctx: IcpContentxType
+  constructor (ctx: IcpContentxType) {
+    this.ctx = ctx
+  }
 
   /**
    * 获取活动窗口

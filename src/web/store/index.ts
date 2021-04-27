@@ -3,16 +3,11 @@ import { InjectionKey } from 'vue'
 
 import syncElectron from './plugins/syncElectron'
 import setting from './setting'
+import down from './down'
 
 const storeMain = createStore({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
   modules: {
-    setting
+    setting, down
   },
   plugins: [createLogger(), syncElectron]
 })

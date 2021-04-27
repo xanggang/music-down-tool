@@ -6,6 +6,7 @@ import downFile from '../controller/downFile'
  * 注册全部的ipc事件
  */
 export default function () {
+  console.log('getRouter')
   try {
     getRouter(ipcMain, [config, downFile])
   } catch (err) {

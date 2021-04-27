@@ -9,7 +9,7 @@ declare namespace NodeJS {
       env: string;
       isDevelopment: boolean;
       staticDir: string;
-      userFilePath: string;
+      downloadFolder: string;
       userBasePath: string;
       sysConfig: object;
       db: IDbType;

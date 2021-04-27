@@ -7,7 +7,7 @@ global.env = process.env.NODE_ENV || 'dev'
 global.isDevelopment = global.env !== 'production' // 是否是开发模式
 global.userBasePath = app.getPath('userData') // 获取用户地址路径
 global.staticDir = __static // 全局静态文件地址
-global.userFilePath = ''
+global.downloadFolder = ''
 global.sysConfig = {}
 global.db = initDb()
 

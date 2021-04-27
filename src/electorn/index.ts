@@ -2,7 +2,6 @@ import { BrowserWindow } from 'electron'
 import installExtension from 'electron-devtools-installer'
 import createAsarProtocol from './protocol'
 import MenuApp from './menu/index'
-import IpcApp from './ipc/index'
 import { LowdbSync } from 'lowdb'
 import initIpcEvent from './router'
 
@@ -10,7 +9,6 @@ export default class ElectronApp {
   protected isDevToolInit = false // 是否已经启用开发工具
   protected win: BrowserWindow | null = null // 窗口
   protected menu: MenuApp | null = null
-  protected ipc: IpcApp | null = null
   protected db: LowdbSync<any> | null = null
 
   /**
@@ -116,7 +114,6 @@ export default class ElectronApp {
     createAsarProtocol()
     const mainWin = this.createWindow()
     initIpcEvent()
-    // this.ipc = new IpcApp(mainWin)
     await this.initDevTools()
     await this.registerMenu()
     if (global.isDevelopment) {

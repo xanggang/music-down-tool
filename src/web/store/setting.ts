@@ -2,7 +2,7 @@ import { Module } from 'vuex'
 
 // 全局的配置信息
 export interface IGlobalSettingModule {
-  userFilePath: string;
+  downloadFolder: string;
   userBasePath: string;
   sysConfig: string;
 }

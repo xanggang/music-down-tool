@@ -3,14 +3,9 @@ import FileSync from 'lowdb/adapters/FileSync'
 import path from 'path'
 import fs from 'fs-extra'
 import lodashId from 'lodash-id'
+import { app } from 'electron'
 
-export interface IDBData {
-  userFilePath: string; // 用户的文件目录
-  userBasePath: string; // 用户的根目录，安装的地址
-  sysConfig: any;
-}
-
-export type IDbType = LowdbSync<IDBData>
+import type { IDBData, IDbType } from '@/types/db'
 
 export default function (): LowdbSync<IDBData> {
   const bastDir = global.userBasePath
@@ -26,7 +21,7 @@ export default function (): LowdbSync<IDBData> {
 
   // 设置默认配置
   db.defaults({
-    userFilePath: '',
+    downloadFolder: app.getPath('userData'),
     userBasePath: '',
     sysConfig: ''
   }).write()
