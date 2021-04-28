@@ -12,7 +12,6 @@ global.sysConfig = {}
 global.db = initDb()
 
 console.log(`cache dir: ${global.userBasePath}`)
-
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])

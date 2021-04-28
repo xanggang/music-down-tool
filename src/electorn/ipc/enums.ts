@@ -16,6 +16,12 @@ export const V_DOWN_FILE = 'view:down_file'
 // 批量下载
 export const V_BATCH_DOWN_FILE = 'view:batch_down_file'
 
+// 获取文件图标
+export const V_GET_FILE_ICON = 'view:get_file_icon'
+
+// 打开指定文件夹
+export const V_OPEN_FOLDER = 'view:open_folder'
+
 /**
  * 主进程发起的
  */

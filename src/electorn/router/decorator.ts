@@ -24,6 +24,7 @@ function getCtx () {
 }
 
 function getRouter (ipcMain: typeof IpcMainType, controllerList: any[]) {
+  console.log('\x1b[42;30m 加载ipc通讯\x1B[0m')
   controllerList.forEach((value: any) => {
     const prototype = value.prototype
     const propertyNames = Object.getOwnPropertyNames(prototype)

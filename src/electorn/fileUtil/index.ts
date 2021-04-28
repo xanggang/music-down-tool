@@ -32,3 +32,11 @@ export function getDirFiles (extname: string, dirPath: string): IDirFileInfo[] {
 
   return fileInfoList
 }
+
+export function getFileName (url: string) {
+  return path.basename(url)
+}
+
+export function getFileExit () {
+
+}

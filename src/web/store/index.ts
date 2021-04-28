@@ -3,21 +3,25 @@ import { InjectionKey } from 'vue'
 
 import syncElectron from './plugins/syncElectron'
 import setting from './setting'
-import down from './down'
+import down, { IGlobalDownType } from './down'
 
-const storeMain = createStore({
+interface IStoreGlobalType {
+  down: IGlobalDownType;
+}
+
+const storeMain = createStore<any>({
   modules: {
     setting, down
   },
   plugins: [createLogger(), syncElectron]
 })
 
-export const key: InjectionKey<Store<any>> = Symbol('vuexKey')
+export const key: InjectionKey<Store<IStoreGlobalType>> = Symbol('vuexKey')
 
 export default storeMain
 
 export function useStore () {
-  return useBaseStore<any>(key)
+  return useBaseStore<IStoreGlobalType>(key)
 }
 
 export function getStoreMain (): Store<any> {

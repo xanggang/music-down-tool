@@ -2,7 +2,7 @@ import path from 'path'
 import electron, { BrowserWindow, DownloadItem } from 'electron'
 import fs from 'fs'
 import BaseController from '@/electorn/controller/base'
-import type { IDownQueueType } from '@/types/downTypes'
+import type { IDownQueueType, IDownItemInfoType } from '@/types/downTypes'
 
 // 转换数据大小格式
 const bytesToSize = (bytes: number, decimals?: number) => {
@@ -21,7 +21,6 @@ export class DownLoadManagerClass extends BaseController {
 
   constructor (ctx: any) {
     super(ctx)
-    console.log('DownLoadManagerClass', 'constructor')
     this.registerDownLoadListener()
   }
 
@@ -30,6 +29,7 @@ export class DownLoadManagerClass extends BaseController {
    * @private
    */
   private registerDownLoadListener () {
+    console.log('\x1b[42;30m 注册下载管理器 \x1B[0m')
     const webContents = this.getWebContents()
     const listener = (e: Event, item: DownloadItem) => {
       const itemUrl = decodeURIComponent(item.getURLChain()[0] || item.getURL())
@@ -57,11 +57,27 @@ export class DownLoadManagerClass extends BaseController {
           downloadedBytes: receivedBytes, // 已下载
           downloaded: bytesToSize(receivedBytes)
         }
-        queueItem.onProgress(progress)
+        const downInfo: IDownItemInfoType = {
+          uuid: queueItem.uuid,
+          savePath: item.getSavePath(), // 保存路径
+          downURL: item.getURL(), // 下载地址
+          mimeType: item.getMimeType(), // MIME 类型
+          hasUserGesture: item.hasUserGesture(), // 是否具有用户手势
+          fileName: item.getFilename(), // 下载文件名
+          contentDisposition: item.getContentDisposition(), // 响应头中的Content-Disposition字段
+          startTime: item.getStartTime(), // 开始下载时间
+          state
+        }
+        queueItem.onProgress(progress, downInfo)
       })
 
-      item.on('done', (e: any, state: any) => {
-        console.log('文件下载完成', state)
+      item.on('done', async (e: any, state: any) => {
+        queueItem.onFinishedDownload({
+          uuid: queueItem.uuid,
+          url: item.getURL(),
+          filePath,
+          state
+        })
       })
     }
     webContents.session.on('will-download', listener)
@@ -84,15 +100,6 @@ export class DownLoadManagerClass extends BaseController {
    */
   addDownLoadTask (option: any) {
     const webContents = this.getWebContents()
-    // const item: IDownQueueType = {
-    //   uuid: '12333',
-    //   url: option.url,
-    //   path: 'electornDown',
-    //   filename: '测试下载文件.mp3',
-    //   downloadFolder: option.downloadFolder || this.db.get('downloadFolder').value()
-    //   // onProgress: () => {},
-    //   // callback: () => {}
-    // }
     this.queue.push(option)
     webContents.downloadURL(option.url)
   }
