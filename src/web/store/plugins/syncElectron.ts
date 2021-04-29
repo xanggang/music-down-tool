@@ -18,6 +18,6 @@ export default function syncElectron (store: Store<any>) {
     store.commit('down/CHANGE_DOWN_PROGRESS', data)
   })
   ipcRenderer.on(IpcEnums.M_DOWN_SUCCESS, function (e: any, data: any) {
-    store.commit('down/DOWN_SUCCESS', data)
+    store.dispatch('down/handleDownSuccess', data)
   })
 }

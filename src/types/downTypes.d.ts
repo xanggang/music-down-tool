@@ -9,9 +9,6 @@ export interface IDownOptions {
   fileName: string;
   state: IDownStatusType;
   downloadFolder?: string;
-  canResume: boolean; // 是否可以重新下载
-  isUserPause: boolean; // 是否是用户暂停
-  orginName?: string; // 原始文件名字
   progressInfo?: IProgressParType;
 }
 
@@ -46,6 +43,7 @@ export interface IDownItemInfoType {
   startTime: number; // 开始下载时间
   state: IDownStatusType;
   icon?: string; // 文件图标
+  isUserPause: boolean; // 是否暂停状态
 }
 
 // 进度条信息
@@ -60,6 +58,7 @@ export interface IProgressParType {
   total: string;
   downloadedBytes: number; // 已下载
   downloaded: string;
+  canResume: boolean; // 是否可以继续下载
 }
 
 // vuex里存储的队列信息

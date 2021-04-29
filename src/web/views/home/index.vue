@@ -25,8 +25,10 @@ export default defineComponent({
   components: { DownManager },
   setup () {
     const a = 'https://freetyst.nf.migu.cn/public/product9th/product42/2021/01/2612/2009年06月26日博尔普斯/歌曲下载/MP3_40_16_Stero/60054701938124543.mp3?key=49979f81e373c100&Tim=1619349468395&channelid=00&msisdn=e5582e73d8eb4ee2a1cee25e508c6ebb&CI=600547019382600902000006889306&F=000009'
+    const c = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/ljlYFjMmWelwE0Jc-Ts6m-OUJEV3.jpg'
 
-    const b = 'https://freetyst.nf.migu.cn/public/product9th/product41/2020/08/1013/2009年06月26日博尔普斯/歌曲下载/MP3_40_16_Stero/60054701958132127.mp3?key=a0eac0db2cae9dcd&Tim=1619349469341&channelid=00&msisdn=c78da90973ad4102aa20bba0b3debd13&CI=600547019582600902000006889222&F=000009'
+    const b = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2021/04/21/lr2fd1oOvlUlyMH3C0woCEXba27M.jpg'
+    const d = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/lkLb5AfrSqhmamZTsZ_XqzFDnSdv.jpg'
     const list = [
       {
         url: a,
@@ -35,11 +37,19 @@ export default defineComponent({
       {
         url: b,
         type: '.mp3'
+      },
+      {
+        url: c,
+        type: 'img'
+      },
+      {
+        url: d,
+        type: 'img'
       }
     ]
     const store = useStore()
     return {
-      handleDown: () => store.dispatch('down/batchDownFiles', list)
+      handleDown: () => store.dispatch('down/batchAddDownFileTask', list)
     }
   },
   data () {

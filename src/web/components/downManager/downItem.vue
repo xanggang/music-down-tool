@@ -24,13 +24,15 @@
         <div class="col-container">
           <div class="icon-bar">
             <ZoomInOutlined v-if="state === 'completed' " @click="handleOpenFileFolder" />
-            <PauseCircleOutlined v-if="state === 'progressing'"/>
+            <PauseCircleOutlined v-if="state === 'progressing' && !downItem.process.canResume" @click="handlePause"/>
+            <PlayCircleOutlined v-if="downItem.process.canResume" @click="handleResume"/>
           </div></div>
       </a-col>
       <a-col :span="2">
         <div class="col-container">
           <div class="icon-bar">
-            <CloseCircleOutlined />
+            <CloseCircleOutlined v-if="state === 'progressing'" @click="handleCancel"/>
+            <CloseCircleOutlined v-if="state === 'completed' || state === 'cancelled'" @click="handleDelete"/>
           </div>
         </div>
       </a-col>
@@ -45,16 +47,18 @@ import {
   ZoomInOutlined,
   CloseCircleOutlined,
   InfoCircleOutlined,
-  PauseCircleOutlined
+  PauseCircleOutlined,
+  PlayCircleOutlined
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { IWebDownItemType } from '@/types/downTypes'
 import * as IpcEnums from '@/electorn/ipc/enums'
+import { useStore } from '@/web/store'
 const { ipcRenderer } = window.require('electron')
 
 export default defineComponent({
   name: 'downItem',
-  components: { VerticalAlignBottomOutlined, ZoomInOutlined, CloseCircleOutlined, InfoCircleOutlined, PauseCircleOutlined },
+  components: { VerticalAlignBottomOutlined, ZoomInOutlined, CloseCircleOutlined, InfoCircleOutlined, PauseCircleOutlined, PlayCircleOutlined },
   props: {
     downItem: {
       type: Object as PropType<IWebDownItemType>,
@@ -62,8 +66,10 @@ export default defineComponent({
     }
   },
   setup (props) {
+    const store = useStore()
     const state = computed(() => props.downItem.itemInfo.state)
     const iconSrc = computed(() => props.downItem.itemInfo.icon)
+    const uuid = computed(() => props.downItem.itemInfo.uuid)
 
     const filterDownState = (state: 'waitdown' | 'progressing' | 'completed') => {
       const map = {
@@ -74,16 +80,41 @@ export default defineComponent({
       return map[state] as string
     }
 
+    // 打开文件所在目录
     const handleOpenFileFolder = () => {
       const res = ipcRenderer.sendSync(IpcEnums.V_OPEN_FOLDER, props.downItem.itemInfo.savePath)
       if (res === 'failed') message.error('文件夹不存在')
+    }
+
+    // 暂停下载
+    const handlePause = () => {
+      store.dispatch('down/handleDownPause', uuid.value)
+    }
+
+    // 继续下载
+    const handleResume = () => {
+      store.dispatch('down/handleDownResume', uuid.value)
+    }
+
+    // 删除下载任务
+    const handleDelete = () => {
+      store.dispatch('down/handleDownDelete', uuid.value)
+    }
+
+    // 取消下载
+    const handleCancel = () => {
+      store.dispatch('down/handleDownCancel', uuid.value)
     }
 
     return {
       state,
       iconSrc,
       filterDownState,
-      handleOpenFileFolder
+      handleOpenFileFolder,
+      handlePause,
+      handleResume,
+      handleDelete,
+      handleCancel
     }
   }
 })

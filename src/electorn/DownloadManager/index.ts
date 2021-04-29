@@ -14,10 +14,15 @@ const bytesToSize = (bytes: number, decimals?: number) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
 
+interface IDownInfoMap {
+  [key: string]: DownloadItem;
+}
+
 export class DownLoadManagerClass extends BaseController {
   // 下载路径
   downloadFolder: string = global.db.get('downloadFolder').value()
   queue: IDownQueueType[] = []
+  downInfoMap: IDownInfoMap = {}
 
   constructor (ctx: any) {
     super(ctx)
@@ -36,6 +41,7 @@ export class DownLoadManagerClass extends BaseController {
       const queueItem = this.popQueueItem(itemUrl)
       const filePath = path.join(queueItem.downloadFolder, queueItem.path, queueItem.filename)
       item.setSavePath(filePath)
+      this.downInfoMap[queueItem.uuid] = item
 
       // 当前下载任务的总字节数
       const totalBytes = item.getTotalBytes()
@@ -55,7 +61,8 @@ export class DownLoadManagerClass extends BaseController {
           totalBytes: totalBytes, // 全部
           total: bytesToSize(totalBytes),
           downloadedBytes: receivedBytes, // 已下载
-          downloaded: bytesToSize(receivedBytes)
+          downloaded: bytesToSize(receivedBytes),
+          canResume: item.canResume()
         }
         const downInfo: IDownItemInfoType = {
           uuid: queueItem.uuid,
@@ -66,6 +73,7 @@ export class DownLoadManagerClass extends BaseController {
           fileName: item.getFilename(), // 下载文件名
           contentDisposition: item.getContentDisposition(), // 响应头中的Content-Disposition字段
           startTime: item.getStartTime(), // 开始下载时间
+          isUserPause: false,
           state
         }
         queueItem.onProgress(progress, downInfo)
@@ -78,6 +86,7 @@ export class DownLoadManagerClass extends BaseController {
           filePath,
           state
         })
+        delete this.downInfoMap[queueItem.uuid]
       })
     }
     webContents.session.on('will-download', listener)
@@ -102,6 +111,63 @@ export class DownLoadManagerClass extends BaseController {
     const webContents = this.getWebContents()
     this.queue.push(option)
     webContents.downloadURL(option.url)
+  }
+
+  /**
+   * 暂停下载
+   * @param uuid
+   */
+  onNeedPause (uuid: string) {
+    const downloadItem = this.downInfoMap[uuid]
+    if (!downloadItem) throw new Error(`暂停下载失败，${uuid}不存在`)
+    if (!downloadItem.isPaused()) downloadItem.pause()
+    return true
+  }
+
+  /**
+   * @description 接收到恢复命令
+   * @param uuid
+   */
+  onNeedResume (uuid: string) {
+    const downloadItem = this.downInfoMap[uuid]
+
+    if (!downloadItem || !downloadItem.canResume()) {
+      throw new Error(`恢复下载失败，${uuid}不存在或者不可恢复`)
+    }
+    downloadItem.resume()
+    return true
+  }
+
+  /**
+   * @description 删除下载任务
+   * @param uuid
+   */
+  onNeedDelete (uuid: string) {
+    try {
+      const downloadItem = this.downInfoMap[uuid]
+      if (downloadItem) {
+        delete this.downInfoMap[uuid]
+      }
+      return true
+    } catch (error) {
+      throw new Error(error.message)
+    }
+  }
+
+  /**
+   * @description 接收到取消命令
+   * @param uuid
+   */
+  onNeedCancel (uuid: string) {
+    const downloadItem = this.downInfoMap[uuid]
+
+    if (!downloadItem) {
+      throw new Error(`恢复下载失败，${uuid}不存在`)
+    }
+
+    downloadItem.cancel()
+    delete this.downInfoMap[uuid]
+    return true
   }
 }
 

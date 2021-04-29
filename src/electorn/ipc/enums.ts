@@ -22,6 +22,18 @@ export const V_GET_FILE_ICON = 'view:get_file_icon'
 // 打开指定文件夹
 export const V_OPEN_FOLDER = 'view:open_folder'
 
+// 暂停下载
+export const V_PAUSE_DOWN = 'view:pause_down'
+
+// 继续下载
+export const V_RESUME_DOWN = 'view:resume_down'
+
+// 删除任务
+export const V_DELETE_DOWN = 'view:delete_down'
+
+// 取消任务
+export const V_CANCEL_DOWN = 'view:cancel_down'
+
 /**
  * 主进程发起的
  */

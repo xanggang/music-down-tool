@@ -9,6 +9,7 @@ import type { IDownOptions, IDownQueueType } from '@/types/downTypes'
 export default class DownFileController extends BaseController {
   @Ipc(IpcEnums.V_DOWN_FILE)
   downFile (event: IpcMainEvent, options: IDownOptions) {
+    console.log('添加下载任务', options)
     const downloadFolder = options.downloadFolder || this.db.get('downloadFolder').value()
     const item: IDownQueueType = {
       uuid: options.uuid,
@@ -17,7 +18,6 @@ export default class DownFileController extends BaseController {
       filename: options.fileName,
       downloadFolder,
       onProgress: (process, itemInfo) => {
-        console.log('onProgress', { process })
         this.setWebMsg(IpcEnums.M_DOWN_PROGRESS, { itemInfo, process })
       },
       onFinishedDownload: (par: any) => {
@@ -35,6 +35,46 @@ export default class DownFileController extends BaseController {
       event.returnValue = nativeImage.toDataURL() // 使用base64展示图标
     } catch {
       event.returnValue = ''
+    }
+  }
+
+  @Ipc(IpcEnums.V_PAUSE_DOWN)
+  async handlePause (event: IpcMainEvent, uuid: string) {
+    try {
+      const res = this.ctx.downLoadManager.onNeedPause(uuid)
+      if (res) event.returnValue = 'success'
+    } catch (error) {
+      event.returnValue = error.message
+    }
+  }
+
+  @Ipc(IpcEnums.V_RESUME_DOWN)
+  async handleResume (event: IpcMainEvent, uuid: string) {
+    try {
+      const res = this.ctx.downLoadManager.onNeedResume(uuid)
+      if (res) event.returnValue = 'success'
+    } catch (error) {
+      event.returnValue = error.message
+    }
+  }
+
+  @Ipc(IpcEnums.V_DELETE_DOWN)
+  async handleDelete (event: IpcMainEvent, uuid: string) {
+    try {
+      const res = this.ctx.downLoadManager.onNeedDelete(uuid)
+      if (res) event.returnValue = 'success'
+    } catch (error) {
+      event.returnValue = error.message
+    }
+  }
+
+  @Ipc(IpcEnums.V_CANCEL_DOWN)
+  async handleCancel (event: IpcMainEvent, uuid: string) {
+    try {
+      const res = this.ctx.downLoadManager.onNeedCancel(uuid)
+      if (res) event.returnValue = 'success'
+    } catch (error) {
+      event.returnValue = error.message
     }
   }
 
