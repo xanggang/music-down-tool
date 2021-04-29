@@ -1,8 +1,7 @@
 import path from 'path'
-import electron, { BrowserWindow, DownloadItem } from 'electron'
-import fs from 'fs'
+import { DownloadItem } from 'electron'
 import BaseController from '@/electorn/controller/base'
-import type { IDownQueueType, IDownItemInfoType } from '@/types/downTypes'
+import type { IDownQueueItem, IProgressParType, IDownItemInfoType } from '@/types/downTypes'
 
 // 转换数据大小格式
 const bytesToSize = (bytes: number, decimals?: number) => {
@@ -19,9 +18,7 @@ interface IDownInfoMap {
 }
 
 export class DownLoadManagerClass extends BaseController {
-  // 下载路径
-  downloadFolder: string = global.db.get('downloadFolder').value()
-  queue: IDownQueueType[] = []
+  queue: IDownQueueItem[] = []
   downInfoMap: IDownInfoMap = {}
 
   constructor (ctx: any) {
@@ -39,7 +36,7 @@ export class DownLoadManagerClass extends BaseController {
     const listener = (e: Event, item: DownloadItem) => {
       const itemUrl = decodeURIComponent(item.getURLChain()[0] || item.getURL())
       const queueItem = this.popQueueItem(itemUrl)
-      const filePath = path.join(queueItem.downloadFolder, queueItem.path, queueItem.filename)
+      const filePath = path.join(queueItem.downloadFolder, queueItem.path, queueItem.fileName)
       item.setSavePath(filePath)
       this.downInfoMap[queueItem.uuid] = item
 
@@ -51,7 +48,7 @@ export class DownLoadManagerClass extends BaseController {
         const currentReceivedBytes = item.getReceivedBytes() // 已经下载的字节数
         const speedValue = currentReceivedBytes - receivedBytes // 上次-这次=速度
         receivedBytes = currentReceivedBytes // 记录
-        const progress = {
+        const progress: IProgressParType = {
           uuid: queueItem.uuid,
           progress: receivedBytes * 100 / totalBytes, // 进度
           speedBytes: speedValue, // 速度
@@ -61,10 +58,10 @@ export class DownLoadManagerClass extends BaseController {
           totalBytes: totalBytes, // 全部
           total: bytesToSize(totalBytes),
           downloadedBytes: receivedBytes, // 已下载
-          downloaded: bytesToSize(receivedBytes),
-          canResume: item.canResume()
+          downloaded: bytesToSize(receivedBytes)
         }
         const downInfo: IDownItemInfoType = {
+          canResume: item.canResume(),
           uuid: queueItem.uuid,
           savePath: item.getSavePath(), // 保存路径
           downURL: item.getURL(), // 下载地址

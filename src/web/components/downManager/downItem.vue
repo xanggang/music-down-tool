@@ -6,7 +6,7 @@
           <div class="image-bar">
             <img :src="iconSrc || '../../../assets/logo.png'" alt="">
           </div>
-          <div class="file-name">{{ downItem.itemInfo.fileName }}</div>
+          <div class="file-name">{{ downItem.downItemInfo.fileName }}</div>
         </div>
       </a-col>
       <a-col :span="10">
@@ -16,16 +16,16 @@
           <span class="ml-10"> {{ filterDownState(state) }} </span>
         </div>
         <div class="col-container" v-else>
-          <a-progress :percent="downItem.process.progress" />
-          <div class="description">{{ downItem.process.speed }}</div>3
+          <a-progress :percent="downItem.progressInfo.progress" />
+          <div class="description">{{ downItem.progressInfo.speed }}</div>3
         </div>
       </a-col>
       <a-col :span="2">
         <div class="col-container">
           <div class="icon-bar">
             <ZoomInOutlined v-if="state === 'completed' " @click="handleOpenFileFolder" />
-            <PauseCircleOutlined v-if="state === 'progressing' && !downItem.process.canResume" @click="handlePause"/>
-            <PlayCircleOutlined v-if="downItem.process.canResume" @click="handleResume"/>
+            <PauseCircleOutlined v-if="state === 'progressing' && !downItem.progressInfo.canResume" @click="handlePause"/>
+            <PlayCircleOutlined v-if="downItem.progressInfo.canResume" @click="handleResume"/>
           </div></div>
       </a-col>
       <a-col :span="2">
@@ -51,7 +51,7 @@ import {
   PlayCircleOutlined
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
-import type { IWebDownItemType } from '@/types/downTypes'
+import type { IStoreDownItemType } from '@/types/downTypes'
 import * as IpcEnums from '@/electorn/ipc/enums'
 import { useStore } from '@/web/store'
 const { ipcRenderer } = window.require('electron')
@@ -61,15 +61,15 @@ export default defineComponent({
   components: { VerticalAlignBottomOutlined, ZoomInOutlined, CloseCircleOutlined, InfoCircleOutlined, PauseCircleOutlined, PlayCircleOutlined },
   props: {
     downItem: {
-      type: Object as PropType<IWebDownItemType>,
+      type: Object as PropType<IStoreDownItemType>,
       required: true
     }
   },
   setup (props) {
     const store = useStore()
-    const state = computed(() => props.downItem.itemInfo.state)
-    const iconSrc = computed(() => props.downItem.itemInfo.icon)
-    const uuid = computed(() => props.downItem.itemInfo.uuid)
+    const state = computed(() => props.downItem.downItemInfo.state)
+    const iconSrc = computed(() => props.downItem.downItemInfo.icon)
+    const uuid = computed(() => props.downItem.downItemInfo.uuid)
 
     const filterDownState = (state: 'waitdown' | 'progressing' | 'completed') => {
       const map = {
@@ -82,7 +82,7 @@ export default defineComponent({
 
     // 打开文件所在目录
     const handleOpenFileFolder = () => {
-      const res = ipcRenderer.sendSync(IpcEnums.V_OPEN_FOLDER, props.downItem.itemInfo.savePath)
+      const res = ipcRenderer.sendSync(IpcEnums.V_OPEN_FOLDER, props.downItem.downItemInfo.savePath)
       if (res === 'failed') message.error('文件夹不存在')
     }
 

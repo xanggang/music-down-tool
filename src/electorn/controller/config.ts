@@ -1,5 +1,5 @@
 import BaseController from '@/electorn/controller/base'
-import { dialog, ipcMain, IpcMainEvent, OpenDialogSyncOptions } from 'electron'
+import { dialog, IpcMainEvent, OpenDialogSyncOptions } from 'electron'
 import { Ipc } from '@/electorn/router/decorator'
 import * as IpcEnums from '@/electorn/ipc/enums'
 import { getDirFiles } from '@/electorn/fileUtil'

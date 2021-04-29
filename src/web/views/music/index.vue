@@ -9,19 +9,36 @@
 <!--    >-->
 <!--      {{item.name }}-->
 <!--    </div>-->
-    <audio controls>
-      <audio class="play" autoplay src="music.mp3" type="audio/mpeg"></audio>
-    </audio>
+<!--    <audio controls>-->
+<!--      <audio class="play" autoplay src="music.mp3" type="audio/mpeg"></audio>-->
+<!--    </audio>-->
 
-    <a-button @click="handlePlay">当时的</a-button>
+<!--    <a-button @click="handlePlay">当时的</a-button>-->
+
+    {{ state }}
+    <a-button @click="change">assd</a-button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import { Howl } from 'howler'
 export default defineComponent({
   name: 'music-root',
+  setup () {
+    const state = reactive<any>({
+      a: {
+        b: 1
+      }
+    })
+    const change = () => {
+      state.a.c = 1
+    }
+    return {
+      state,
+      change
+    }
+  },
   methods: {
     handlePlay () {
       const sound = new Howl({

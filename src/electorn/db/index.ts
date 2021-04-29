@@ -5,7 +5,7 @@ import fs from 'fs-extra'
 import lodashId from 'lodash-id'
 import { app } from 'electron'
 
-import type { IDBData, IDbType } from '@/types/db'
+import type { IDBData } from '@/types/db'
 
 export default function (): LowdbSync<IDBData> {
   const bastDir = global.userBasePath

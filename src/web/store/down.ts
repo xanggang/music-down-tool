@@ -2,21 +2,17 @@ import { Module } from 'vuex'
 import { toRaw } from 'vue'
 import * as IpcEnums from '@/electorn/ipc/enums'
 import { v4 as uuidv4 } from 'uuid'
-import type { IDownOptions, IDownFinishedCallBackPar, IProgressParType, IDownItemInfoType } from '@/types/downTypes'
 import * as fileUtils from '@/web/util/fileUtil'
 import { message } from 'ant-design-vue'
+import type { IStoreDownItemType, IDownFinishedCallBackPar } from '@/types/downTypes'
+import { IDownItemOptions } from '@/types/downTypes'
 
 const { ipcRenderer } = window.require('electron')
 
-interface IDownItem {
-  itemInfo: IDownItemInfoType;
-  process: IProgressParType;
-}
-
 export interface IGlobalDownType {
-  waitDownloadList: IDownItem[]; // 下载队列
-  downList: IDownItem[];
-  downedList: IDownItem[];
+  waitDownloadList: IStoreDownItemType[]; // 下载队列
+  downloadingList: IStoreDownItemType[];
+  downloadList: IStoreDownItemType[];
   maxCount: number;
 }
 
@@ -24,8 +20,8 @@ const globalDownModule: Module<IGlobalDownType, any> = {
   namespaced: true,
   state: {
     waitDownloadList: [], // 等待下载的队列 todo 类型有点问题
-    downList: [], // 正在下载中的队列, 有进度条的
-    downedList: [], // 下载完成的队列
+    downloadingList: [], // 正在下载中的队列, 有进度条的
+    downloadList: [], // 下载完成的队列
     maxCount: 1 // 下载线程
   },
   mutations: {
@@ -33,73 +29,74 @@ const globalDownModule: Module<IGlobalDownType, any> = {
     ADD_DOWN_TASK (state, data) {
       state.waitDownloadList.push(data)
     },
-    // 从下载队列取出一个用于下载
+    // 从下载队列取出一个放在下载中
     SHIFT_DOWN_TASK (state, length) {
       const list = state.waitDownloadList.splice(0, length)
+      state.downloadingList = [...state.downloadingList, ...list]
     },
     // 下载进度条
-    CHANGE_DOWN_PROGRESS (state, { itemInfo, process }) {
-      const queueItem = state.downList.find((item: IDownItem) => item.itemInfo.uuid === itemInfo.uuid)
+    CHANGE_DOWN_PROGRESS (state, { progressInfo, downItemInfo }) {
+      const queueItem = state.downloadingList.find((item: IStoreDownItemType) => item.option.uuid === downItemInfo.uuid)
       if (!queueItem) {
-        // 这一个任务刚开始下载
-        state.downList.push({ itemInfo, process })
         return
       }
-      queueItem.process = process
+      queueItem.progressInfo = progressInfo
+      queueItem.downItemInfo = downItemInfo
+      console.log(queueItem)
     },
     // 下载完成
     DOWN_SUCCESS (state, data: IDownFinishedCallBackPar) {
-      const queueItemIndex = state.downList.findIndex((item: IDownItem) => item.itemInfo.uuid === data.uuid)
+      const queueItemIndex = state.downloadingList.findIndex((item: IStoreDownItemType) => item.option.uuid === data.uuid)
       if (queueItemIndex < 0) throw new Error('进度条更新失败，下载的文件不在队列中')
-      const queueItemArr = state.downList.splice(queueItemIndex, 1)
+      const queueItemArr = state.downloadingList.splice(queueItemIndex, 1)
       const queueItem = queueItemArr[0]
-      const icon = ipcRenderer.sendSync(IpcEnums.V_GET_FILE_ICON, queueItem.itemInfo.savePath)
-      console.log(icon)
-      queueItem.itemInfo.state = data.state
-      queueItem.itemInfo.icon = icon
-      state.downedList.push(queueItem)
+      const icon = ipcRenderer.sendSync(IpcEnums.V_GET_FILE_ICON, queueItem.downItemInfo.savePath)
+      queueItem.downItemInfo.state = data.state
+      queueItem.downItemInfo.icon = icon
+      state.downloadList.push(queueItem)
       console.log('下载完成')
     },
     // 暂停下载
     DOWN_PAUSE (state, uuid) {
-      const item = state.downList.find(item => item.itemInfo.uuid === uuid)
+      const item = state.downloadingList.find(item => item.downItemInfo.uuid === uuid)
       if (!item) return
-      item.itemInfo.state = 'progressing'
-      item.itemInfo.isUserPause = true
+      item.downItemInfo.state = 'progressing'
+      item.downItemInfo.isUserPause = true
     },
     // 继续下载
     DOWN_RESUME (state, uuid) {
-      const item = state.downList.find(item => item.itemInfo.uuid === uuid)
+      const item = state.downloadingList.find(item => item.downItemInfo.uuid === uuid)
       if (!item) return
-      item.itemInfo.state = 'progressing'
-      item.itemInfo.isUserPause = false
+      item.downItemInfo.state = 'progressing'
+      item.downItemInfo.isUserPause = false
     },
     // 删除下载11
     DOWN_DELETE (state, uuid) {
-      const index = state.downedList.findIndex(item => item.itemInfo.uuid === uuid)
-      state.downedList.splice(index, 1)
+      const index = state.downloadingList.findIndex(item => item.downItemInfo.uuid === uuid)
+      state.downloadingList.splice(index, 1)
     },
     // 下载取消
     DOWN_CANCEL (state, uuid) {
-      const item = state.downList.find(item => item.itemInfo.uuid === uuid)
+      const item = state.downloadingList.find(item => item.downItemInfo.uuid === uuid)
       if (!item) return
-      item.itemInfo.state = 'cancelled'
-      item.itemInfo.isUserPause = false
+      item.downItemInfo.state = 'cancelled'
+      item.downItemInfo.isUserPause = false
     }
   },
   actions: {
     addDownFileTask ({ commit, dispatch }, { url, type }) {
       const { ext, name } = fileUtils.getFileNameTool(url)
-      const queueItem: IDownOptions = {
+      const queueItem: IDownItemOptions = {
         uuid: uuidv4(),
         url: url,
         type: type,
-        state: 'waitdown',
+        path: 'electronDown',
         fileName: name + ext
       }
       commit('ADD_DOWN_TASK', {
-        itemInfo: queueItem,
-        process
+        option: queueItem,
+        progressInfo: {},
+        downItemInfo: {}
       })
       dispatch('limitDownCount')
     },
@@ -110,13 +107,13 @@ const globalDownModule: Module<IGlobalDownType, any> = {
     },
     limitDownCount ({ commit, state }) {
       const maxCount = state.maxCount
-      const downLength = state.downList.length
+      const downLength = state.downloadingList.length
       const downNum = maxCount - downLength
       if (downNum <= 0) return
       const list: any = state.waitDownloadList.slice(0, downNum)
       list.forEach((queueItem: any) => {
         console.log(toRaw(queueItem))
-        const res = ipcRenderer.sendSync(IpcEnums.V_DOWN_FILE, toRaw(queueItem.itemInfo))
+        const res = ipcRenderer.sendSync(IpcEnums.V_DOWN_FILE, toRaw(queueItem.option))
         if (res === 'failed') {
           console.log('添加下载任务失败')
         }

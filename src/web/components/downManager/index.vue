@@ -27,8 +27,8 @@ export default defineComponent({
   setup () {
     const store = useStore()
     const waitDownloadList = computed(() => store.state.down.waitDownloadList)
-    const downList = computed(() => store.state.down.downList)
-    const downedList = computed(() => store.state.down.downedList)
+    const downList = computed(() => store.state.down.downloadingList)
+    const downedList = computed(() => store.state.down.downloadList)
 
     return {
       waitDownloadList,

@@ -4,21 +4,22 @@ import BaseController from '@/electorn/controller/base'
 import { Ipc } from '@/electorn/router/decorator'
 import * as IpcEnums from '@/electorn/ipc/enums'
 
-import type { IDownOptions, IDownQueueType } from '@/types/downTypes'
+import type { IProgressParType, IDownQueueItem, IDownItemInfoType, IDownItemOptions } from '@/types/downTypes'
 
 export default class DownFileController extends BaseController {
   @Ipc(IpcEnums.V_DOWN_FILE)
-  downFile (event: IpcMainEvent, options: IDownOptions) {
+  downFile (event: IpcMainEvent, options: IDownItemOptions) {
     console.log('添加下载任务', options)
     const downloadFolder = options.downloadFolder || this.db.get('downloadFolder').value()
-    const item: IDownQueueType = {
+    const item: IDownQueueItem = {
       uuid: options.uuid,
       url: options.url,
+      type: options.type,
       path: 'electornDown',
-      filename: options.fileName,
+      fileName: options.fileName,
       downloadFolder,
-      onProgress: (process, itemInfo) => {
-        this.setWebMsg(IpcEnums.M_DOWN_PROGRESS, { itemInfo, process })
+      onProgress: (progressInfo: IProgressParType, downItemInfo: IDownItemInfoType) => {
+        this.setWebMsg(IpcEnums.M_DOWN_PROGRESS, { downItemInfo, progressInfo })
       },
       onFinishedDownload: (par: any) => {
         this.setWebMsg(IpcEnums.M_DOWN_SUCCESS, par)
