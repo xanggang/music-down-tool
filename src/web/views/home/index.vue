@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Progress  style="width: 50px; height: 50px; margin-left: 100px"/>
     <button @click="handleSendIpc"> 发送Ipc消息， 打开文件选择窗口</button>
     <button @click="handleSelectLocalPath">选择本地音乐文件夹</button>
     <div style="width: 100%;height: 400px;display: flex; align-items: center; justify-content: center">
@@ -7,7 +8,7 @@
         您的浏览器不支持 audio 标签。
       </audio>
     </div>
-    <downManager />
+    <downManager/>
     <button @click="handleDown">下载</button>
   </div>
 </template>
@@ -17,12 +18,13 @@ import { defineComponent } from 'vue'
 import * as IpcEnums from '@/electorn/ipc/enums'
 import { useStore } from '@/web/store'
 import DownManager from '@/web/components/downManager/index.vue'
+import Progress from '@/web/components/Progress/index.vue'
 
 const { ipcRenderer } = window.require('electron')
 
 export default defineComponent({
   name: 'Home',
-  components: { DownManager },
+  components: { DownManager, Progress },
   setup () {
     const a = 'https://freetyst.nf.migu.cn/public/product9th/product42/2021/01/2612/2009年06月26日博尔普斯/歌曲下载/MP3_40_16_Stero/60054701938124543.mp3?key=49979f81e373c100&Tim=1619349468395&channelid=00&msisdn=e5582e73d8eb4ee2a1cee25e508c6ebb&CI=600547019382600902000006889306&F=000009'
     const c = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/ljlYFjMmWelwE0Jc-Ts6m-OUJEV3.jpg'
