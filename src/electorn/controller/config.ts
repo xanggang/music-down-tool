@@ -2,7 +2,7 @@ import BaseController from '@/electorn/controller/base'
 import { dialog, IpcMainEvent, OpenDialogSyncOptions } from 'electron'
 import { Ipc } from '@/electorn/router/decorator'
 import * as IpcEnums from '@/electorn/ipc/enums'
-import { getDirFiles } from '@/electorn/fileUtil'
+import { getDirFiles, getFilePath, readFileAsync } from '@/electorn/fileUtil'
 /**
  * 系统配置相关
  */
@@ -48,5 +48,20 @@ export default class ConfigController extends BaseController {
     if (!path) return
     const fileList = getDirFiles('.mp3', path)
     event.returnValue = fileList
+  }
+
+  /**
+   * 读取单个文件
+   * @param event
+   */
+  @Ipc(IpcEnums.V_OPEN_SINGLE_FILE)
+  openSingleFile (event: IpcMainEvent) {
+    const path = getFilePath()
+    if (!path) {
+      event.returnValue = ''
+      return
+    }
+    const res = readFileAsync(path)
+    event.returnValue = res
   }
 }

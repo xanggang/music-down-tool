@@ -33,6 +33,8 @@ export const V_DELETE_DOWN = 'view:delete_down'
 
 // 取消任务
 export const V_CANCEL_DOWN = 'view:cancel_down'
+//
+export const V_OPEN_SINGLE_FILE = 'view:open_single_file'
 
 /**
  * 主进程发起的

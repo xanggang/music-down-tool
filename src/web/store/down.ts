@@ -84,14 +84,14 @@ const globalDownModule: Module<IGlobalDownType, any> = {
     }
   },
   actions: {
-    addDownFileTask ({ commit, dispatch }, { url, type }) {
-      const { ext, name } = fileUtils.getFileNameTool(url)
+    addDownFileTask ({ commit, dispatch }, { url, type, songName }) {
+      const { ext } = fileUtils.getFileNameTool(url)
       const queueItem: IDownItemOptions = {
         uuid: uuidv4(),
         url: url,
         type: type,
-        path: 'electronDown',
-        fileName: name + ext
+        path: 'electronDown/' + songName,
+        fileName: songName + uuidv4() + ext
       }
       commit('ADD_DOWN_TASK', {
         option: queueItem,

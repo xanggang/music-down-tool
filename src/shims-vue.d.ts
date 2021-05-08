@@ -4,5 +4,5 @@ declare module '*.vue' {
   export default component
 }
 
-declare module 'g'
+// declare module 'iconfont'
 declare module 'uuid'

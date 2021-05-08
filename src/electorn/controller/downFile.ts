@@ -15,7 +15,7 @@ export default class DownFileController extends BaseController {
       uuid: options.uuid,
       url: options.url,
       type: options.type,
-      path: 'electornDown',
+      path: options.path,
       fileName: options.fileName,
       downloadFolder,
       onProgress: (progressInfo: IProgressParType, downItemInfo: IDownItemInfoType) => {

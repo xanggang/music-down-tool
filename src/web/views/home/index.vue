@@ -10,6 +10,7 @@
     </div>
     <downManager/>
     <button @click="handleDown">下载</button>
+    <button @click="openFile">读取文件</button>
   </div>
 </template>
 
@@ -50,8 +51,48 @@ export default defineComponent({
       }
     ]
     const store = useStore()
+
+    const openFile = () => {
+      const configString = ipcRenderer.sendSync(IpcEnums.V_OPEN_SINGLE_FILE)
+      if (!configString) return
+      try {
+        const config = JSON.parse(configString)
+        const downConfig: any = []
+        config.forEach((item: any) => {
+          if (item.playUrl) {
+            downConfig.push({
+              songId: item.songId,
+              songName: item.songName,
+              url: 'https://' + item.playUrl,
+              type: 'music'
+            })
+          }
+          if (item.largePic) {
+            downConfig.push({
+              songId: item.songId,
+              songName: item.songName,
+              url: 'https://' + item.largePic,
+              type: 'img'
+            })
+          }
+          if (item.smallPic) {
+            downConfig.push({
+              songId: item.songId,
+              songName: item.songName,
+              url: 'https://' + item.smallPic,
+              type: 'img'
+            })
+          }
+        })
+        store.dispatch('down/batchAddDownFileTask', downConfig)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
     return {
-      handleDown: () => store.dispatch('down/batchAddDownFileTask', list)
+      handleDown: () => store.dispatch('down/batchAddDownFileTask', list),
+      openFile
     }
   },
   data () {

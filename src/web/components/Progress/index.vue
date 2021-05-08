@@ -73,7 +73,6 @@ export default defineComponent({
     border-radius: 50%;//变圆
     top: calc(-1 * var(--base-width) / 2);
   }
-
   .heart::after{
     position: absolute;
     content: '';
@@ -89,7 +88,7 @@ export default defineComponent({
     width: 50px;
     height: 50px;
     overflow: hidden;
-    transform: rotate(-45deg);
+    //transform: rotate(-45deg);
     border: 1px solid #000;
     background: pink;
   }
@@ -101,7 +100,6 @@ export default defineComponent({
     position: relative;
     margin-top: -35px;
     margin-right: -5px;
-
 
     &:before, &:after {
       content: "";

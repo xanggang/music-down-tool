@@ -15,16 +15,23 @@
 
 <!--    <a-button @click="handlePlay">当时的</a-button>-->
 
-    {{ state }}
+    <Progress  style="width: 50px; height: 50px; margin-left: 100px"/>
+
+    <svg class="icon iconaaa" aria-hidden="true">
+      <use xlink:href="#icon-hualang"></use>
+    </svg>
+
     <a-button @click="change">assd</a-button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive } from 'vue'
+import Progress from '@/web/components/Progress/index.vue'
 import { Howl } from 'howler'
 export default defineComponent({
   name: 'music-root',
+  components: { Progress },
   setup () {
     const state = reactive<any>({
       a: {
@@ -57,5 +64,9 @@ export default defineComponent({
   width: 200px;
   height: 20px;
   background: pink;
+}
+
+.iconaaa {
+
 }
 </style>
