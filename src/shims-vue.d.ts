@@ -6,3 +6,4 @@ declare module '*.vue' {
 
 // declare module 'iconfont'
 declare module 'uuid'
+declare module 'jsmediatags'

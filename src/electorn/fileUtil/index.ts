@@ -74,3 +74,38 @@ export function readFileAsync (path: string) {
     throw new Error(`读取文件失败:${path}`)
   }
 }
+
+/**
+ * 递归的读取一个文件夹， 获取指定
+ * @param extNames 过滤拓展名
+ * @param dirPath
+ * @param list
+ */
+export function deepReadDir (extNames: string[], dirPath: string, list?: IDirFileInfo[]): IDirFileInfo[] {
+  console.log('deepReadDir')
+  let fileInfoList: IDirFileInfo[] = list && list.length ? list : []
+  if (!fs.existsSync(dirPath)) {
+    return []
+  }
+
+  const fileList = fs.readdirSync(dirPath)
+  if (!fileList.length) return []
+
+  for (const file of fileList) {
+    const localPath = dirPath + path.sep + file
+    if (fs.statSync(localPath).isDirectory()) {
+      fileInfoList = fileInfoList.concat(deepReadDir(extNames, localPath, fileInfoList))
+      continue
+    }
+    const fileExt = path.extname(file)
+    if (extNames.includes(fileExt)) {
+      fileInfoList.push({
+        filePath: localPath,
+        name: file,
+        size: fs.statSync(localPath).size
+      })
+    }
+  }
+
+  return fileInfoList
+}
