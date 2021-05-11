@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import * as IpcEnums from '@/electorn/ipc/enums'
+import APi from '@/electorn/ipc/enums'
 import { useStore } from '@/web/store'
 import DownManager from '@/web/components/downManager/index.vue'
 import Progress from '@/web/components/Progress/index.vue'
@@ -53,7 +53,7 @@ export default defineComponent({
     const store = useStore()
 
     const openFile = () => {
-      const configString = ipcRenderer.sendSync(IpcEnums.V_OPEN_SINGLE_FILE)
+      const configString = ipcRenderer.sendSync(APi.ToolApi.V_OPEN_SINGLE_FILE)
       if (!configString) return
       try {
         const config = JSON.parse(configString)
@@ -106,18 +106,18 @@ export default defineComponent({
       this.src = files[0].path
     },
     handleSendIpc () {
-      const path = ipcRenderer.sendSync(IpcEnums.V_SAVE_PATH_DIALOG)
+      const path = ipcRenderer.sendSync(APi.ToolApi.V_SAVE_PATH_DIALOG)
       console.log(path)
     },
     getMusicPath () {
       return ''
     },
     handleSelectLocalPath () {
-      const path = ipcRenderer.sendSync(IpcEnums.V_SAVE_PATH_DIALOG)
+      const path = ipcRenderer.sendSync(APi.ToolApi.V_SAVE_PATH_DIALOG)
       if (!path) return
       if (path.length) {
         console.log(path[0])
-        const list = ipcRenderer.sendSync(IpcEnums.V_GET_DIR_FILE_LIST, path[0])
+        const list = ipcRenderer.sendSync(APi.ToolApi.V_GET_DIR_FILE_LIST, path[0])
         if (list.length) {
           this.src = list[0].filePath
         }

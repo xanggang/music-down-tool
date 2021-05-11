@@ -1,6 +1,6 @@
 import { Module } from 'vuex'
 import { toRaw } from 'vue'
-import * as IpcEnums from '@/electorn/ipc/enums'
+import Api from '@/electorn/ipc/enums'
 import { v4 as uuidv4 } from 'uuid'
 import * as fileUtils from '@/web/util/fileUtil'
 import { message } from 'ant-design-vue'
@@ -50,7 +50,7 @@ const globalDownModule: Module<IGlobalDownType, any> = {
       if (queueItemIndex < 0) throw new Error('进度条更新失败，下载的文件不在队列中')
       const queueItemArr = state.downloadingList.splice(queueItemIndex, 1)
       const queueItem = queueItemArr[0]
-      const icon = ipcRenderer.sendSync(IpcEnums.V_GET_FILE_ICON, queueItem.downItemInfo.savePath)
+      const icon = ipcRenderer.sendSync(Api.ToolApi.V_GET_FILE_ICON, queueItem.downItemInfo.savePath)
       queueItem.downItemInfo.state = data.state
       queueItem.downItemInfo.icon = icon
       state.downloadList.push(queueItem)
@@ -113,7 +113,7 @@ const globalDownModule: Module<IGlobalDownType, any> = {
       const list: any = state.waitDownloadList.slice(0, downNum)
       list.forEach((queueItem: any) => {
         console.log(toRaw(queueItem))
-        const res = ipcRenderer.sendSync(IpcEnums.V_DOWN_FILE, toRaw(queueItem.option))
+        const res = ipcRenderer.sendSync(Api.DownFileApi.V_DOWN_FILE, toRaw(queueItem.option))
         if (res === 'failed') {
           console.log('添加下载任务失败')
         }
@@ -125,22 +125,22 @@ const globalDownModule: Module<IGlobalDownType, any> = {
       dispatch('limitDownCount')
     },
     handleDownPause ({ commit }, uuid) {
-      const res = ipcRenderer.sendSync(IpcEnums.V_PAUSE_DOWN, uuid)
+      const res = ipcRenderer.sendSync(Api.DownFileApi.V_PAUSE_DOWN, uuid)
       if (res === 'success') commit('DOWN_PAUSE', uuid)
       else message.error(res)
     },
     handleDownResume ({ commit }, uuid) {
-      const res = ipcRenderer.sendSync(IpcEnums.V_RESUME_DOWN, uuid)
+      const res = ipcRenderer.sendSync(Api.DownFileApi.V_RESUME_DOWN, uuid)
       if (res === 'success') commit('DOWN_RESUME', uuid)
       else message.error(res)
     },
     handleDownDelete ({ commit }, uuid) {
-      const res = ipcRenderer.sendSync(IpcEnums.V_DELETE_DOWN, uuid)
+      const res = ipcRenderer.sendSync(Api.DownFileApi.V_DELETE_DOWN, uuid)
       if (res === 'success') commit('DOWN_DELETE', uuid)
       else message.error(res)
     },
     handleDownCancel ({ commit }, uuid) {
-      const res = ipcRenderer.sendSync(IpcEnums.V_CANCEL_DOWN, uuid)
+      const res = ipcRenderer.sendSync(Api.DownFileApi.V_CANCEL_DOWN, uuid)
       if (res === 'success') commit('DOWN_CANCEL', uuid)
       else message.error(res)
     }
