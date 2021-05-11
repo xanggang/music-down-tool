@@ -34,7 +34,7 @@ const DownFileApi = {
 
 // 工具类
 const ToolApi = {
-// 获取文件夹下的全部文件
+  // 获取文件夹下的全部文件
   V_GET_DIR_FILE_LIST: 'view:get_dir_file_list',
   // 打开选择文件夹的弹窗
   V_SAVE_PATH_DIALOG: 'view:save_path_dialog',
@@ -46,8 +46,15 @@ const ToolApi = {
   V_OPEN_SINGLE_FILE: 'view:open_single_file'
 }
 
+const PlayListApi = {
+  // 扫描一个文件夹， 获取其下面的全部音乐信息
+  V_SCANNING_FOLDER_START: 'view:scanning_folder_start',
+  V_SCANNING_FOLDER_END: 'view:scanning_folder_start_end'
+}
+
 export default {
   ConfigApi,
   DownFileApi,
-  ToolApi
+  ToolApi,
+  PlayListApi
 }

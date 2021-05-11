@@ -1,5 +1,5 @@
 import BaseController from '@/electorn/controller/base'
-import { dialog, IpcMainEvent, OpenDialogSyncOptions } from 'electron'
+import { IpcMainEvent } from 'electron'
 import { Ipc } from '@/electorn/router/decorator'
 import Api from '@/electorn/ipc/enums'
 import FileUtil from '@/electorn/util/fileUtil'
@@ -14,13 +14,7 @@ export default class ConfigController extends BaseController {
    */
   @Ipc(Api.ToolApi.V_SAVE_PATH_DIALOG)
   showSavePathDiaLog (event: IpcMainEvent) {
-    const options = {
-      title: '选择保存路径',
-      defaultPath: '',
-      buttonLabel: '确认',
-      properties: ['openDirectory', 'createDirectory', 'promptToCreate']
-    }
-    const request = dialog.showOpenDialogSync(options as OpenDialogSyncOptions)
+    const request = DialogUtil.getFolderPath()
     if (request) {
       event.returnValue = request
     } else {

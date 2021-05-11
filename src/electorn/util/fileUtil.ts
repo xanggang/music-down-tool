@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
-
+import MusicUtil from '@/electorn/util/musicUtil'
+import type { IMusicFileInfoTypes } from '@/types/playListTypes'
 /**
  * 获取文件指定拓展名的全部文件
  * @param extname
@@ -69,9 +70,8 @@ export default class FileUtil {
    * @param dirPath
    * @param list
    */
-  static deepReadDir (extNames: string[], dirPath: string, list?: IDirFileInfo[]): IDirFileInfo[] {
-    console.log('deepReadDir')
-    let fileInfoList: IDirFileInfo[] = list && list.length ? list : []
+  static async deepReadDir (extNames: string[], dirPath: string, list?: IMusicFileInfoTypes[]): Promise< IMusicFileInfoTypes[]> {
+    let fileInfoList: IMusicFileInfoTypes[] = list && list.length ? list : []
     if (!fs.existsSync(dirPath)) {
       return []
     }
@@ -79,19 +79,19 @@ export default class FileUtil {
     const fileList = fs.readdirSync(dirPath)
     if (!fileList.length) return []
 
-    for (const file of fileList) {
+    for await (const file of fileList) {
       const localPath = dirPath + path.sep + file
-      if (fs.statSync(localPath).isDirectory()) {
-        fileInfoList = fileInfoList.concat(this.deepReadDir(extNames, localPath, fileInfoList))
+      const fileStat = fs.statSync(localPath)
+      if (fileStat.isDirectory()) {
+        fileInfoList = await this.deepReadDir(extNames, localPath, fileInfoList)
         continue
       }
       const fileExt = path.extname(file)
       if (extNames.includes(fileExt)) {
-        fileInfoList.push({
-          filePath: localPath,
-          name: file,
-          size: fs.statSync(localPath).size
-        })
+        const info: IMusicFileInfoTypes = await MusicUtil.getMp3Info(localPath) as IMusicFileInfoTypes
+        info.size = fileStat.size
+        info.fileName = file
+        fileInfoList.push(info)
       }
     }
 
