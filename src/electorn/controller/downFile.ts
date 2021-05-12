@@ -2,7 +2,7 @@ import { IpcMainEvent, shell } from 'electron'
 import fs from 'fs'
 import BaseController from '@/electorn/controller/base'
 import { Ipc } from '@/electorn/router/decorator'
-import Api from '@/electorn/ipc/enums'
+import Api from '@/electorn/enums/ApiEnums'
 
 import type { IProgressParType, IDownQueueItem, IDownItemInfoType, IDownItemOptions } from '@/types/downTypes'
 

@@ -1,7 +1,7 @@
 import BaseController from '@/electorn/controller/base'
 import { IpcMainEvent } from 'electron'
 import { Ipc } from '@/electorn/router/decorator'
-import Api from '@/electorn/ipc/enums'
+import Api from '@/electorn/enums/ApiEnums'
 import FileUtil from '@/electorn/util/fileUtil'
 import DialogUtil from '@/electorn/util/dialogUtil'
 /**

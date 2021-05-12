@@ -1,6 +1,6 @@
 import { Module } from 'vuex'
 import { toRaw } from 'vue'
-import Api from '@/electorn/ipc/enums'
+import Api from '@/electorn/enums/ApiEnums'
 import { v4 as uuidv4 } from 'uuid'
 import * as fileUtils from '@/web/util/fileUtil'
 import { message } from 'ant-design-vue'
@@ -70,7 +70,7 @@ const globalDownModule: Module<IGlobalDownType, any> = {
       item.downItemInfo.state = 'progressing'
       item.downItemInfo.isUserPause = false
     },
-    // 删除下载11
+    // 删除下载
     DOWN_DELETE (state, uuid) {
       const index = state.downloadingList.findIndex(item => item.downItemInfo.uuid === uuid)
       state.downloadingList.splice(index, 1)
@@ -84,14 +84,14 @@ const globalDownModule: Module<IGlobalDownType, any> = {
     }
   },
   actions: {
-    addDownFileTask ({ commit, dispatch }, { url, type, songName }) {
-      const { ext } = fileUtils.getFileNameTool(url)
+    addDownFileTask ({ commit, dispatch }, { url, type }) {
+      const { ext, name } = fileUtils.getFileNameTool(url)
       const queueItem: IDownItemOptions = {
         uuid: uuidv4(),
         url: url,
         type: type,
-        path: 'electronDown/' + songName,
-        fileName: songName + uuidv4() + ext
+        path: 'electronDown',
+        fileName: name + ext
       }
       commit('ADD_DOWN_TASK', {
         option: queueItem,

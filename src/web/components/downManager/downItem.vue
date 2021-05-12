@@ -52,7 +52,7 @@ import {
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { IStoreDownItemType } from '@/types/downTypes'
-import Api from '@/electorn/ipc/enums'
+import Api from '@/electorn/enums/ApiEnums'
 import { useStore } from '@/web/store'
 const { ipcRenderer } = window.require('electron')
 

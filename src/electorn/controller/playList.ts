@@ -1,7 +1,7 @@
 import BaseController from '@/electorn/controller/base'
 import { IpcMainEvent } from 'electron'
 import { Ipc } from '@/electorn/router/decorator'
-import Api from '@/electorn/ipc/enums'
+import Api from '@/electorn/enums/ApiEnums'
 import FileUtil from '@/electorn/util/fileUtil'
 import DialogUtil from '@/electorn/util/dialogUtil'
 
@@ -17,9 +17,17 @@ export default class PlayListController extends BaseController {
       event.sender.send(Api.PlayListApi.V_SCANNING_FOLDER_END, [])
       return
     }
-    console.time('读取文件信息耗时')
-    const list = await FileUtil.deepReadDir(['.mp3'], folderPath)
-    console.timeEnd('读取文件信息耗时')
-    event.sender.send(Api.PlayListApi.V_SCANNING_FOLDER_END, list)
+    try {
+      console.log(1)
+      console.time('读取文件信息耗时')
+      const list = await FileUtil.deepReadDir(['.mp3'], folderPath)
+      console.timeEnd('读取文件信息耗时')
+      event.sender.send(Api.PlayListApi.V_SCANNING_FOLDER_END, list)
+    } catch (err) {
+      console.log('扫描文件失败')
+      event.sender.send(Api.PlayListApi.V_SCANNING_FOLDER_END, [])
+      throw new Error(err.message)
+    }
+
   }
 }

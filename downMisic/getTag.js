@@ -13,18 +13,12 @@ const mp3Duration = require('mp3-duration');
 //     console.log(':(', error.type, error.info);
 //   }
 // });
-console.log('./downMisic/data/musci4.mp3')
-jsmediatags.read('./downMisic/data/musci4.mp3', {
+console.log('./downMisic/data/musci4.m4a')
+jsmediatags.read('./downMisic/data/musci4.m4a', {
   onSuccess: function(tag) {
     console.log(tag);
   },
   onError: function(error) {
     console.log(':(', error.type, error.info);
   }
-});
-
-
-mp3Duration('./downMisic/data/musci4.mp3', function (err, duration) {
-  if (err) return console.log(err);
-  console.log('Your file is ' + duration + ' seconds long');
 });

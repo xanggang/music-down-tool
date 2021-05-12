@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import APi from '@/electorn/ipc/enums'
+import APi from '@/electorn/enums/ApiEnums'
 import { useStore } from '@/web/store'
 import DownManager from '@/web/components/downManager/index.vue'
 import Progress from '@/web/components/Progress/index.vue'
@@ -40,14 +40,14 @@ export default defineComponent({
     const d = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/lkLb5AfrSqhmamZTsZ_XqzFDnSdv.jpg'
     const e = 'http://m701.music.126.net/20210511180820/520024b402e3943bfc2aaf19729b1b47/jdyyaac/0509/0158/065e/2c9b88ed8362529464e214ad79aeed7c.m4a'
     const list = [
-      // {
-      //   url: a,
-      //   type: '.mp3'
-      // },
-      // {
-      //   url: b,
-      //   type: '.mp3'
-      // },
+      {
+        url: a,
+        type: '.mp3'
+      },
+      {
+        url: a,
+        type: '.mp3'
+      },
       // {
       //   url: c,
       //   type: 'img'

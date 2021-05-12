@@ -1,4 +1,4 @@
-import Api from '@/electorn/ipc/enums'
+import Api from '@/electorn/enums/ApiEnums'
 import { Store } from 'vuex'
 const { ipcRenderer } = window.require('electron')
 /**

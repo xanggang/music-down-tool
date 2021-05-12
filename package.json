@@ -36,7 +36,6 @@
     "lodash": "^4.17.21",
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
-    "mp3-duration": "^1.1.0",
     "music-api": "^0.3.11",
     "puppeteer-core": "^9.0.0",
     "reflect-metadata": "^0.1.13",
