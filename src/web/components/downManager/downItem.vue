@@ -52,7 +52,7 @@ import {
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { IStoreDownItemType } from '@/types/downTypes'
-import * as IpcEnums from '@/electorn/ipc/enums'
+import Api from '@/electorn/enums/ApiEnums'
 import { useStore } from '@/web/store'
 const { ipcRenderer } = window.require('electron')
 
@@ -82,7 +82,7 @@ export default defineComponent({
 
     // 打开文件所在目录
     const handleOpenFileFolder = () => {
-      const res = ipcRenderer.sendSync(IpcEnums.V_OPEN_FOLDER, props.downItem.downItemInfo.savePath)
+      const res = ipcRenderer.sendSync(Api.ToolApi.V_OPEN_FOLDER, props.downItem.downItemInfo.savePath)
       if (res === 'failed') message.error('文件夹不存在')
     }
 

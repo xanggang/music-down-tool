@@ -2894,6 +2894,11 @@ bl@^4.0.3:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
+bluebird-co@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/bluebird-co/-/bluebird-co-2.2.0.tgz#e0a49e63b6b17e34c91f48b3934b769a377fbed7"
+  integrity sha1-4KSeY7axfjTJH0izk0t2mjd/vtc=
+
 bluebird-lst@^1.0.9:
   version "1.0.9"
   resolved "https://npm.code.hzmantu.com/bluebird-lst/-/bluebird-lst-1.0.9.tgz#a64a0e4365658b9ab5fe875eb9dfb694189bb41c"
@@ -2901,7 +2906,7 @@ bluebird-lst@^1.0.9:
   dependencies:
     bluebird "^3.5.5"
 
-bluebird@^3.1.1, bluebird@^3.5.5, bluebird@^3.7.2:
+bluebird@^3.1.1, bluebird@^3.5.1, bluebird@^3.5.5, bluebird@^3.7.2:
   version "3.7.2"
   resolved "https://npm.code.hzmantu.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
@@ -7747,6 +7752,13 @@ jsesc@~0.5.0:
   resolved "https://npm.code.hzmantu.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
   integrity sha1-597mbjXW/Bb3EP6R1c9p9w8IkR0=
 
+jsmediatags@3.8.1:
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/jsmediatags/-/jsmediatags-3.8.1.tgz#e27d26e957b0b330c28f9762c82940c4dcc64720"
+  integrity sha512-ZI4P8J0gDiM9BgkTC0QbPARFkWaFscGAJKnpL/UK2Xeux026R5ytChvx4OJAn7kxoYFqpVUeSTEToBVe+K4yhQ==
+  dependencies:
+    xhr2 "^0.1.4"
+
 json-buffer@3.0.0:
   version "3.0.0"
   resolved "https://npm.code.hzmantu.com/json-buffer/-/json-buffer-3.0.0.tgz#5b1f397afc75d677bde8bcfc0e47e1f9a3d9a898"
@@ -8103,6 +8115,11 @@ loader-utils@^2.0.0:
     big.js "^5.2.2"
     emojis-list "^3.0.0"
     json5 "^2.1.2"
+
+loadsh@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/loadsh/-/loadsh-0.0.4.tgz#5314babd12bb13315dde024a4ca70758c5489d2d"
+  integrity sha512-U+wLL8InpfRalWrr+0SuhWgGt10M4OyAk6G8xCYo2rwpiHtxZkWiFpjei0vO463ghW8LPCdhqQxXlMy2qicAEw==
 
 locate-path@^2.0.0:
   version "2.0.0"
@@ -8793,6 +8810,14 @@ move-concurrently@^1.0.1:
     mkdirp "^0.5.1"
     rimraf "^2.5.4"
     run-queue "^1.0.3"
+
+mp3-duration@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/mp3-duration/-/mp3-duration-1.1.0.tgz#c002e4e454448060873660abb4da7d10118d0e9c"
+  integrity sha1-wALk5FREgGCHNmCrtNp9EBGNDpw=
+  dependencies:
+    bluebird "^3.5.1"
+    bluebird-co "^2.2.0"
 
 ms@2.0.0:
   version "2.0.0"
@@ -13052,6 +13077,11 @@ xdg-basedir@^4.0.0:
   version "4.0.0"
   resolved "https://npm.code.hzmantu.com/xdg-basedir/-/xdg-basedir-4.0.0.tgz#4bc8d9984403696225ef83a1573cbbcb4e79db13"
   integrity sha512-PSNhEJDejZYV7h50BohL09Er9VaIefr2LMAf3OEmpCkjOi34eYyQYAXUTjEQtZJTKcF0E2UKTh+osDLsgNim9Q==
+
+xhr2@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/xhr2/-/xhr2-0.1.4.tgz#7f87658847716db5026323812f818cadab387a5f"
+  integrity sha1-f4dliEdxbbUCYyOBL4GMras4el8=
 
 xml-js@^1.4.1:
   version "1.6.11"

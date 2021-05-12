@@ -86,7 +86,7 @@ function basename (path: string | number) {
   return path.slice(start, end)
 }
 
-export function getBaseName (path: string, ext: string) {
+export function getBaseName (path: string, ext: string): string {
   let f = basename(path)
   if (ext && f.substr(-1 * ext.length) === ext) {
     f = f.substr(0, f.length - ext.length)
