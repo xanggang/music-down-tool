@@ -1,17 +1,14 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/music">music</router-link>
-  </div>
-  <router-view/>
+  <Layer></Layer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Layer from 'web/components/Layer/index.vue'
 
 export default defineComponent({
-  name: 'root'
+  name: 'root',
+  components: { Layer }
 })
 
 </script>
@@ -22,19 +19,8 @@ export default defineComponent({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  height: 100%;
+  width: 100%;
 }
 </style>
 

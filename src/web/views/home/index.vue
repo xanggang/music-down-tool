@@ -15,7 +15,6 @@
       <button @click="openFile">读取文件</button>
       <button @click="getPlayListByFolder">获取一个文件夹</button>
     </a-spin>
-
   </div>
 </template>
 

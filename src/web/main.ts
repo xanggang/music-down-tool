@@ -5,6 +5,7 @@ import store, { key } from './store'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 import '@/assets/icon-font/iconfont'
+import '@/assets/icon-font/iconfont.css'
 
 const app = createApp(App)
 

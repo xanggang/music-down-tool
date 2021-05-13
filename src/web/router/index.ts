@@ -14,6 +14,15 @@ const routes: Array<RouteRecordRaw> = [
     path: '/music',
     name: 'music',
     component: () => import(/* webpackChunkName: "about3" */ '../views/music/index.vue')
+  },
+  {
+    path: '/index',
+    name: 'index',
+    component: () => import(/* webpackChunkName: "about3" */ '../views/down/index.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/index'
   }
 ]
 

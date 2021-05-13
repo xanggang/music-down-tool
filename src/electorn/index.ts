@@ -34,21 +34,21 @@ export default class ElectronApp {
    */
   createWindow () {
     let win: BrowserWindow | null = new BrowserWindow({
-      width: 1440,
-      height: 900,
+      width: 1020,
+      height: 710,
       show: false,
-      minWidth: 1440,
-      minHeight: 900,
+      minWidth: 1020,
+      minHeight: 710,
       webPreferences: {
         nodeIntegration: true,
+        contextIsolation: false,
         nodeIntegrationInSubFrames: false,
         scrollBounce: true,
         backgroundThrottling: true
-        // 在注入之前加载脚本
-        // preload: renderProcessApi
       },
-      titleBarStyle: 'default'
-      // icon: path.join(global.launcherStaticDir, 'icon.png'),
+      titleBarStyle: 'hidden'
+      // icon: path.join(global.launcherStaticDir, "icon.png"),
+      // preload: path.join(__dirname, '../renderer.js'),
     })
     this.win = win
 
