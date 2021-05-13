@@ -4,6 +4,7 @@ import createAsarProtocol from './protocol'
 import MenuApp from './menu/index'
 import { LowdbSync } from 'lowdb'
 import initIpcEvent from './router'
+import service from './service/index'
 
 export default class ElectronApp {
   protected isDevToolInit = false // 是否已经启用开发工具
@@ -34,21 +35,21 @@ export default class ElectronApp {
    */
   createWindow () {
     let win: BrowserWindow | null = new BrowserWindow({
-      width: 1440,
-      height: 900,
+      width: 1020,
+      height: 710,
       show: false,
-      minWidth: 1440,
-      minHeight: 900,
+      minWidth: 1020,
+      minHeight: 710,
       webPreferences: {
         nodeIntegration: true,
+        contextIsolation: false,
         nodeIntegrationInSubFrames: false,
         scrollBounce: true,
         backgroundThrottling: true
-        // 在注入之前加载脚本
-        // preload: renderProcessApi
       },
-      titleBarStyle: 'default'
-      // icon: path.join(global.launcherStaticDir, 'icon.png'),
+      titleBarStyle: 'hidden'
+      // icon: path.join(global.launcherStaticDir, "icon.png"),
+      // preload: path.join(__dirname, '../renderer.js'),
     })
     this.win = win
 
@@ -116,6 +117,7 @@ export default class ElectronApp {
     initIpcEvent()
     await this.initDevTools()
     await this.registerMenu()
+    await service()
     if (global.isDevelopment) {
       // todo 本地启动地址
       await mainWin.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)

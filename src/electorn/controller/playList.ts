@@ -28,6 +28,5 @@ export default class PlayListController extends BaseController {
       event.sender.send(Api.PlayListApi.V_SCANNING_FOLDER_END, [])
       throw new Error(err.message)
     }
-
   }
 }

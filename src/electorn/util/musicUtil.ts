@@ -1,7 +1,5 @@
 import jsmediatags from 'jsmediatags'
-import mp3Duration from 'mp3-duration'
 import fs from 'fs-extra'
-import path from 'path'
 import _ from 'lodash'
 
 import type { IMp3InfoTypes } from '@/types/playListTypes'

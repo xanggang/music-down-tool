@@ -1,19 +1,24 @@
 <template>
   <div style="padding: 20px">
-<!--    <a-input v-model:value="songName"></a-input>-->
-<!--    <a-button type="primary" @click="searchMusicByName">Primary</a-button>-->
-<!--    <div-->
-<!--      v-for="(item, index) in songList"-->
-<!--      :key="index"-->
-<!--      @click="handlePlay(item)"-->
-<!--    >-->
-<!--      {{item.name }}-->
-<!--    </div>-->
+    <!--    <a-input v-model:value="songName"></a-input>-->
+    <!--    <a-button type="primary" @click="searchMusicByName">Primary</a-button>-->
+    <!--    <div-->
+    <!--      v-for="(item, index) in songList"-->
+    <!--      :key="index"-->
+    <!--      @click="handlePlay(item)"-->
+    <!--    >-->
+    <!--      {{item.name }}-->
+    <!--    </div>-->
     <audio controls>
-      <audio class="play" autoplay src="https://www.runoob.com/try/demo_source/horse.mp3" type="audio/mpeg"></audio>
+      <audio
+        class="play"
+        autoplay
+        src="https://www.runoob.com/try/demo_source/horse.mp3"
+        type="audio/mpeg"
+      ></audio>
     </audio>
 
-<!--    <a-button @click="handlePlay">当时的</a-button>-->
+    <!--    <a-button @click="handlePlay">当时的</a-button>-->
 
     <Progress  style="width: 50px; height: 50px; margin-left: 100px"/>
 

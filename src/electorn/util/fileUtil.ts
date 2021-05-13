@@ -3,7 +3,6 @@ import fs from 'fs-extra'
 import { v4 as uuidv4 } from 'uuid'
 import MusicUtil from '@/electorn/util/musicUtil'
 import type { IMusicFileInfoTypes } from '@/types/playListTypes'
-import * as FileExeEnums from '@/electorn/enums/FileExeEnums'
 /**
  * 获取文件指定拓展名的全部文件
  * @param extname
@@ -73,7 +72,7 @@ export default class FileUtil {
    * @param list
    */
   static async deepReadDir (extNames: string[], dirPath: string, list?: IMusicFileInfoTypes[]): Promise< IMusicFileInfoTypes[]> {
-    console.log('deepReadDir' )
+    console.log('deepReadDir')
     let fileInfoList: IMusicFileInfoTypes[] = list && list.length ? list : []
     if (!fs.existsSync(dirPath)) {
       return []

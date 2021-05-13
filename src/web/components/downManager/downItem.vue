@@ -26,7 +26,8 @@
             <ZoomInOutlined v-if="state === 'completed' " @click="handleOpenFileFolder" />
             <PauseCircleOutlined v-if="state === 'progressing' && !downItem.progressInfo.canResume" @click="handlePause"/>
             <PlayCircleOutlined v-if="downItem.progressInfo.canResume" @click="handleResume"/>
-          </div></div>
+          </div>
+        </div>
       </a-col>
       <a-col :span="2">
         <div class="col-container">
