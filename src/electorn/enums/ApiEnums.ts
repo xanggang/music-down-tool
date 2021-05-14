@@ -1,5 +1,4 @@
 
-// 系统配置相关
 const ConfigApi = {
   // 修改系统配置， 这个是渲染进程主动获取的
   V_CHANG_SYS_SETTING: 'view:chang_sys_setting',
@@ -52,9 +51,25 @@ const PlayListApi = {
   V_SCANNING_FOLDER_END: 'view:scanning_folder_start_end'
 }
 
+const SearchSongApi = {
+  // 通过歌曲名查询歌曲列表
+  V_SEARCH_SONG_BY_NAME_START: 'view:search_song_by_name_start',
+  V_SEARCH_SONG_BY_NAME_END: 'view:search_song_by_name_end',
+  // 查询歌曲详情
+  V_GET_SONG_DETAIL_STATE: 'view:get_song_detail_start',
+  V_GET_SONG_DETAIL_END: 'view:get_song_detail_end',
+  // 查询播放地址
+  V_GET_PLAYER_URL_START: 'view:get_player_url_start',
+  V_GET_PLAYER_URL_END: 'view:get_player_url_end',
+  // 查询歌词
+  V_GET_LYRIC_START: 'view:get_lyric_start',
+  V_GET_LYRIC_END: 'view:get_lyric_end'
+}
+
 export default {
   ConfigApi,
   DownFileApi,
   ToolApi,
-  PlayListApi
+  PlayListApi,
+  SearchSongApi
 }

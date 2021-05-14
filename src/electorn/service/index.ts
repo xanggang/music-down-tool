@@ -27,18 +27,18 @@
 //   console.log('app.listen in ' + 3000)
 //   app.listen(3000)
 // }
-
-import musicApi from '@suen/music-api'
-
-export default function () {
-  console.log('app.listen in ' + 3000)
-  try {
-    musicApi.searchSong('周杰伦')
-      .then(data => {
-        // console.log({ data })
-      })
-  } catch (e) {
-    console.log(123)
-    console.error({ e })
-  }
-}
+//
+// import musicApi from '@suen/music-api'
+//
+// export default function () {
+//   console.log('app.listen in ' + 3000)
+//   try {
+//     musicApi.searchSong('周杰伦')
+//       .then(data => {
+//         // console.log({ data })
+//       })
+//   } catch (e) {
+//     console.log(123)
+//     console.error({ e })
+//   }
+// }

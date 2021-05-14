@@ -4,7 +4,6 @@ import createAsarProtocol from './protocol'
 import MenuApp from './menu/index'
 import { LowdbSync } from 'lowdb'
 import initIpcEvent from './router'
-import service from './service/index'
 
 export default class ElectronApp {
   protected isDevToolInit = false // 是否已经启用开发工具
@@ -117,7 +116,6 @@ export default class ElectronApp {
     initIpcEvent()
     await this.initDevTools()
     await this.registerMenu()
-    await service()
     if (global.isDevelopment) {
       // todo 本地启动地址
       await mainWin.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)

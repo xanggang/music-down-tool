@@ -75,7 +75,8 @@ module.exports = {
         'renderError'
       ]
     }],
-    'vue/space-infix-ops': ['error', { int32Hint: false }] // 缀操作符之间的间距
+    'vue/space-infix-ops': ['error', { int32Hint: false }], // 缀操作符之间的间距
+    'vue/no-v-model-argument': 0
   },
 
   overrides: [
