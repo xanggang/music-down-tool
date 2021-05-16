@@ -5,7 +5,7 @@
     </div>
     <div class="layer-container">
       <Menu></Menu>
-      <div class="layer-main">
+      <div class="layer-router-container">
         <router-view/>
       </div>
     </div>
@@ -44,12 +44,13 @@ export default defineComponent({
   .layer-container {
     display: flex;
     align-content: center;
-    height: calc(100% - 20px);
+    height: 100%;
+    overflow-y: auto;
 
     .layer-menu {
       width: 80px;
       height: 100%;
-      margin-top: 20px;
+      padding-top: 20px;
       background: @dark-primary-color;
       flex-shrink: 0;
 
@@ -73,7 +74,7 @@ export default defineComponent({
         .menu-item {
           height: 50px;
           width: 100%;
-          color: @divider-color;
+          color: @text-primary-color;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -98,11 +99,19 @@ export default defineComponent({
           z-index: 1;
           right: 0;
           top: 0;
-          background: @background-color-base;;
+          //background: @background-color-base;
+          background: @text-primary-color;
           border-top-left-radius: 30px;
           border-bottom-left-radius: 30px;
         }
       }
+    }
+
+    .layer-router-container {
+      width: 100%;
+      height: 100%;
+      padding: 40px 20px 20px;
+      //background: @background-color-base;
     }
   }
 }

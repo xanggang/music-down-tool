@@ -1,3 +1,5 @@
+import type { vendor, searchSongResult } from '@suen/music-api'
+
 type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 // 可以播放的文件
 export type ICanPlayExeName = '.mp3'
@@ -21,4 +23,25 @@ export interface IMp3InfoTypes {
   musicName?: string;
   album?: string;
   artist?: string;
+}
+
+export interface ISongListInfoTypes {
+  id: string | number;
+  name: string;
+  artist: string;
+  album: string;
+  albumImage: string;
+  vendor: vendor;
+}
+
+export interface ISearchParams {
+  vendor: vendor;
+  id: number | string;
+}
+
+export type IMusicApiSearchSongResult = Record<vendor, searchSongResult>
+
+export interface ISearchSongResult {
+  list: ISongListInfoTypes[];
+  total: number;
 }

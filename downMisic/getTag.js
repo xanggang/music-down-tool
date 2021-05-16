@@ -13,8 +13,8 @@ const mp3Duration = require('mp3-duration');
 //     console.log(':(', error.type, error.info);
 //   }
 // });
-console.log('./downMisic/data/musci4.m4a')
-jsmediatags.read('./downMisic/data/musci4.m4a', {
+console.log('./downMisic/data/60054701958132127.mp3')
+jsmediatags.read('./downMisic/data/60054701958132127.mp3', {
   onSuccess: function(tag) {
     console.log(tag);
   },

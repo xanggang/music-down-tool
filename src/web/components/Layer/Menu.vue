@@ -20,11 +20,13 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed } from 'vue'
 import Icon from '@/web/components/Icon/index.vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'LayerMenu',
   components: { Icon },
   setup () {
+    const router = useRouter()
     const menuList = [
       {
         name: 'index',
@@ -35,6 +37,11 @@ export default defineComponent({
         name: 'about',
         path: '/about',
         icon: 'icon-yinleku'
+      },
+      {
+        name: 'search',
+        path: '/search',
+        icon: 'icon-meitiku'
       }
     ]
 
@@ -47,6 +54,7 @@ export default defineComponent({
     const handleLink = (item: any, index: number) => {
       state.active = item.name
       state.activeIndex = index
+      router.push(item.path)
     }
 
     const maskTop = computed(() => state.activeIndex * 50 + 'px')
@@ -58,9 +66,4 @@ export default defineComponent({
     }
   }
 })
-
 </script>
-
-<style scoped lang="less">
-
-</style>

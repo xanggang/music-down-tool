@@ -14,6 +14,7 @@
       <button @click="handleDown">下载</button>
       <button @click="openFile">读取文件</button>
       <button @click="getPlayListByFolder">获取一个文件夹</button>
+      <button @click="handleSearchSong">搜索歌曲</button>
     </a-spin>
   </div>
 </template>
@@ -33,10 +34,10 @@ export default defineComponent({
   setup () {
     const loading = ref(false)
     const a = 'https://freetyst.nf.migu.cn/public/product9th/product42/2021/01/2612/2009年06月26日博尔普斯/歌曲下载/MP3_40_16_Stero/60054701938124543.mp3?key=49979f81e373c100&Tim=1619349468395&channelid=00&msisdn=e5582e73d8eb4ee2a1cee25e508c6ebb&CI=600547019382600902000006889306&F=000009'
-    const c = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/ljlYFjMmWelwE0Jc-Ts6m-OUJEV3.jpg'
+    // const c = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/ljlYFjMmWelwE0Jc-Ts6m-OUJEV3.jpg'
 
-    const b = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2021/04/21/lr2fd1oOvlUlyMH3C0woCEXba27M.jpg'
-    const d = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/lkLb5AfrSqhmamZTsZ_XqzFDnSdv.jpg'
+    // const b = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2021/04/21/lr2fd1oOvlUlyMH3C0woCEXba27M.jpg'
+    // const d = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/lkLb5AfrSqhmamZTsZ_XqzFDnSdv.jpg'
     const e = 'http://m701.music.126.net/20210511180820/520024b402e3943bfc2aaf19729b1b47/jdyyaac/0509/0158/065e/2c9b88ed8362529464e214ad79aeed7c.m4a'
     const list = [
       {
@@ -105,17 +106,28 @@ export default defineComponent({
       loading.value = true
       const res = ipcRenderer.send(APi.PlayListApi.V_SCANNING_FOLDER_START, 'view start')
       console.log({ res })
-      ipcRenderer.on(APi.PlayListApi.V_SCANNING_FOLDER_END, function (event: any, arg: any) {
+      ipcRenderer.once(APi.PlayListApi.V_SCANNING_FOLDER_END, function (event: any, arg: any) {
         console.log({ arg })
         loading.value = false
       })
+    }
+
+    const handleSearchSong = () => {
+      loading.value = true
+      ipcRenderer.once(APi.SearchSongApi.V_SEARCH_SONG_BY_NAME_END, function (event: any, arg: any) {
+        console.log({ arg })
+        loading.value = false
+      })
+      const res = ipcRenderer.send(APi.SearchSongApi.V_SEARCH_SONG_BY_NAME_START, '七里香')
+      console.log({ res })
     }
 
     return {
       loading,
       handleDown: () => store.dispatch('down/batchAddDownFileTask', list),
       openFile,
-      getPlayListByFolder
+      getPlayListByFolder,
+      handleSearchSong
     }
   },
   data () {
