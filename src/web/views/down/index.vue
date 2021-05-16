@@ -2,6 +2,7 @@
   <div class="down-manager-main">
     <DownMenu></DownMenu>
     <div class="down-manager-container">
+      下载管理
     </div>
   </div>
 </template>
