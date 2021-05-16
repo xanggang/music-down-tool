@@ -1,19 +1,33 @@
 <template>
   <div class="song-list">
-    <div class="song-table-header">
-      <div class="song-name">歌名</div>
-      <div class="song-artists">歌手</div>
-      <div class="song-album">专辑</div>
+    <div :class="['song-table-header', { 'has-scroll': hasScroll }]">
+      <a-row :gutter="10">
+        <a-col :span="10"><div class="col-wrap">歌名</div></a-col>
+        <a-col :span="5"><div class="col-wrap">歌手</div></a-col>
+        <a-col :span="5"><div class="col-wrap">专辑</div></a-col>
+        <a-col :span="4"><div class="col-wrap">来源</div></a-col>
+      </a-row>
     </div>
-    <slot></slot>
+    <div class="scroll-wrap" ref="scrollContainer">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import useScroll from '@/web/use/useScroll'
 
 export default defineComponent({
-  name: 'SongList'
+  name: 'SongList',
+  setup () {
+    const { scrollContainer, hasScroll } = useScroll()
+
+    return {
+      scrollContainer,
+      hasScroll
+    }
+  }
 })
 </script>
 
@@ -25,14 +39,23 @@ export default defineComponent({
 
   .song-table-header {
     width: 100%;
-    display: flex;
     height: 40px;
-    align-items: center;
     padding: 0 10px;
     font-size: 14px;
     color: @primary-text-color;
 
     & > div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    &.has-scroll {
+      margin-left: -8px;
+    }
+
+    .col-wrap {
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -49,6 +72,11 @@ export default defineComponent({
     .song-album {
       width: 30%;
     }
+  }
+
+  .scroll-wrap {
+    height: calc(100% - 48px);
+    overflow: auto;
   }
 }
 </style>

@@ -1,16 +1,28 @@
 <template>
   <div class="search-main">
     <div class="search-header">
-      <a-input v-model:value="keyword" @pressEnter="handleClick"></a-input>
-      <a-button @click="handleClick" class="search-button">搜索</a-button>
+      <a-input v-model:value="keyword" @pressEnter="onSearch"></a-input>
+      <a-button @click="onSearch" class="search-button">搜索</a-button>
     </div>
-    <!--    <a-spin :spinning="loading">-->
-    <div class="search-container">
-      <SongList>
-        <SongItem v-for="(item, index) in songList" :key="index" :song="item"></SongItem>
+    <div class="search-container" style="background: #fff">
+      <SongList v-if="songList.length">
+        <SongItem
+          v-for="(item, index) in songList"
+          :key="index"
+          :song="item"
+          @down-song="handleDownSong"
+        ></SongItem>
+
+        <a-pagination
+          v-model:current="current"
+          :page-size="50"
+          show-less-items
+          :total="total"
+          @change="searchSong"
+        />
       </SongList>
+      <Plate v-show="!songList.length"></Plate>
     </div>
-    <!--    </a-spin>-->
   </div>
 </template>
 
@@ -18,32 +30,59 @@
 import { defineComponent, reactive, toRefs } from 'vue'
 import SongList from './components/SongList.vue'
 import SongItem from './components/SongItem.vue'
+import Plate from '@/web/components/plate/index.vue'
 import * as Api from '@/web/api'
-import to from 'await-to-js'
+
+import type { ISongListInfoTypes } from '@/types/playListTypes'
 
 export default defineComponent({
   name: 'SearchMain',
-  components: { SongList, SongItem },
+  components: { SongList, SongItem, Plate },
   setup () {
-    const state = reactive({
+    const state = reactive<any>({
       keyword: '',
       loading: false,
-      songList: []
+      songList: [],
+      current: 0,
+      total: 1
     })
 
-    const handleClick = async () => {
+    const searchSong = async () => {
+      state.songList = []
+      if (!state.keyword) return
       state.loading = true
-      const [res] = await to(Api.searchSongByName(state.keyword))
+      const res = await Api.searchSongByName(state.keyword, state.current)
       if (res) {
-        console.log(res)
-        state.songList = res as any
+        state.songList = res.list
+        state.total = res.total
       }
       state.loading = false
     }
 
+    const onSearch = async () => {
+      await searchSong()
+    }
+
+    const handleDownSong = async (song: ISongListInfoTypes) => {
+      const res = await Api.getSongDetail1({
+        id: song.id,
+        vendor: song.vendor
+      })
+
+      const url = await Api.getSongPlayerUrl({
+        id: song.id,
+        vendor: song.vendor
+      })
+
+      console.log(res)
+      console.log({ url })
+    }
+
     return {
       ...toRefs(state),
-      handleClick
+      onSearch,
+      searchSong,
+      handleDownSong
     }
   }
 })
@@ -69,7 +108,7 @@ export default defineComponent({
   .search-container {
     width: 100%;
     height: calc(100% - 50px);
-    overflow: auto;
+    overflow: hidden;
   }
 }
 </style>

@@ -99,7 +99,8 @@ export default defineComponent({
           z-index: 1;
           right: 0;
           top: 0;
-          background: @background-color-base;;
+          //background: @background-color-base;
+          background: @text-primary-color;
           border-top-left-radius: 30px;
           border-bottom-left-radius: 30px;
         }
@@ -110,6 +111,7 @@ export default defineComponent({
       width: 100%;
       height: 100%;
       padding: 40px 20px 20px;
+      //background: @background-color-base;
     }
   }
 }

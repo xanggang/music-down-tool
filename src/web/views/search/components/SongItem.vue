@@ -1,8 +1,20 @@
 <template>
   <div :class="['song-item-item', { active: hover }]" v-on="bindMouseEvent">
-    <div class="song-name">{{ song.name }}</div>
-    <div class="song-artists">{{ song.artist }}</div>
-    <div class="song-album">{{ song.album }}</div>
+    <a-row :gutter="10">
+      <a-col :span="10">
+        <div class="col-wrap between">
+          <div :class="['name', {'is-unfold': hover }]"> {{ song.name }} </div>
+          <div class="operating-wrap" v-show="hover">
+            <Icon :need-hover="true" icon="icon-bofang-" @click="$emit('down-song', song)"></Icon>
+            <Icon :need-hover="true" icon="icon-hualang"></Icon>
+            <Icon :need-hover="true" icon="icon-maikefeng-"></Icon>
+          </div>
+        </div>
+      </a-col>
+      <a-col :span="5"><div class="col-wrap">{{ song.artist }}</div></a-col>
+      <a-col :span="5"><div class="col-wrap">{{ song.album }}</div></a-col>
+      <a-col :span="4"><div class="col-wrap">{{ useVendorToCn(song.vendor) }}</div></a-col>
+    </a-row>
   </div>
 </template>
 
@@ -10,9 +22,12 @@
 import { defineComponent, PropType } from 'vue'
 import type { ISongListInfoTypes } from '@/types/playListTypes'
 import useHover from '@/web/use/useHover'
+import { useVendorToCn } from '@/web/use/toCn'
+import Icon from '@/web/components/Icon/index.vue'
 
 export default defineComponent({
   name: 'SongItem',
+  components: { Icon },
   props: {
     song: {
       type: Object as PropType<ISongListInfoTypes>
@@ -23,7 +38,8 @@ export default defineComponent({
 
     return {
       hover,
-      bindMouseEvent
+      bindMouseEvent,
+      useVendorToCn
     }
   }
 })
@@ -33,8 +49,8 @@ export default defineComponent({
 @import '~@/web/style/palette.less';
 .song-item-item {
   width: 100%;
-  display: flex;
   height: 50px;
+  display: flex;
   align-items: center;
   padding: 0 10px;
   font-size: 14px;
@@ -42,25 +58,50 @@ export default defineComponent({
   transition: all 0.2s;
 
   & > div {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    width: 100%;
   }
 
   &.active {
     background: @background-color-base;
   }
 
-  .song-name {
-    width: 40%;
+  .col-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+
+    &.between {
+      justify-content: space-between;
+    }
+
+    & > div {
+      flex-shrink: 0;
+    }
   }
 
-  .song-artists {
-    width: 30%;
+  .name {
+    width: 100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    text-align: left;
+
+    &.is-unfold {
+      width: 120px;
+    }
   }
 
-  .song-album {
-    width: 30%;
+  .operating-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100px;
+    font-size: 16px;
+
+    & > span {
+      margin-right: 10px;
+    }
   }
 }
 </style>

@@ -1,18 +1,36 @@
 <template>
-  <svg class="icon menu-item-icon" aria-hidden="true" v-if="active">
-    <use :xlink:href="`#${icon}`"></use>
-  </svg>
-  <span :class="['iconfont', `${icon}`]" v-else></span>
+  <span v-on="bindMouseEvent">
+    <svg class="icon menu-item-icon" aria-hidden="true" v-if="isActive">
+      <use :xlink:href="`#${icon}`"></use>
+    </svg>
+    <span :class="['iconfont', `${icon}`]" v-else></span>
+  </span>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
+import useHover from '@/web/use/useHover'
 
 export default defineComponent({
   name: 'Icon',
   props: {
     icon: String,
-    active: Boolean
+    active: Boolean,
+    needHover: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup (props) {
+    const { hover, bindMouseEvent } = useHover()
+    const isActive = computed(() => {
+      return (hover.value && props.needHover) || props.active
+    })
+
+    return {
+      bindMouseEvent,
+      isActive
+    }
   }
 })
 </script>
@@ -22,5 +40,6 @@ export default defineComponent({
 
 .menu-item-icon {
   box-shadow: 0 0 10px @light-primary-color, 0 0 5px @default-primary-color;
+  cursor: pointer;
 }
 </style>

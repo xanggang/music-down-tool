@@ -9,14 +9,21 @@ interface ISearchParams {
   id: number | string;
 }
 
+interface ISearchSongOption {
+  keyword: string;
+  offset: number;
+}
+
 export default class SongSearchController extends BaseController {
   /**
    * 通过关键词查询列表
    */
   @Ipc(Api.SearchSongApi.V_SEARCH_SONG_BY_NAME_START)
-  async getMusicListByName (event: IpcMainEvent, keyword: string) {
+  async getMusicListByName (event: IpcMainEvent, { keyword, offset }: ISearchSongOption) {
     try {
-      const res = await musicApi.searchSong(keyword)
+      console.log({ offset })
+      const res = await musicApi.searchSong(keyword, offset)
+      console.log({ res })
       event.sender.send(Api.SearchSongApi.V_SEARCH_SONG_BY_NAME_END, res)
     } catch (err) {
       console.error(err)

@@ -66,10 +66,11 @@ const SearchSongApi = {
   V_GET_LYRIC_END: 'view:get_lyric_end'
 }
 
-export default {
+const APi = {
   ConfigApi,
   DownFileApi,
   ToolApi,
   PlayListApi,
   SearchSongApi
 }
+export default APi
