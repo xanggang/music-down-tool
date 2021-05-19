@@ -4,7 +4,7 @@
       <a-input v-model:value="keyword" @pressEnter="onSearch"></a-input>
       <a-button @click="onSearch" class="search-button">搜索</a-button>
     </div>
-    <div class="search-container" style="background: #fff">
+    <div class="search-container">
       <SongList v-if="songList.length">
         <SongItem
           v-for="(item, index) in songList"

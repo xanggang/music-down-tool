@@ -5,9 +5,11 @@
     </div>
     <div class="layer-container">
       <Menu></Menu>
-      <div class="layer-router-container">
-        <router-view/>
-      </div>
+      <wave>
+        <div class="layer-router-container">
+          <router-view/>
+        </div>
+      </wave>
     </div>
   </div>
 </template>
@@ -15,9 +17,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Menu from './Menu.vue'
+// import wave from '../../views/music/index.vue'
+import wave from './bg.vue'
 export default defineComponent({
   name: 'LayerIndex',
-  components: { Menu }
+  components: { Menu, wave }
 })
 </script>
 
@@ -108,9 +112,12 @@ export default defineComponent({
     }
 
     .layer-router-container {
+      position: absolute;
+      z-index: 99;
       width: 100%;
       height: 100%;
       padding: 40px 20px 20px;
+      background: transparent;
       //background: @background-color-base;
     }
   }
