@@ -1,6 +1,6 @@
 declare namespace NodeJS {
     import BrowserWindow = Electron.BrowserWindow
-  import { IDbType } from './electorn/db/index'
+  import { IDbType } from '../electorn/db'
     type configType = {
         configUrl: string;
         microApi: string;

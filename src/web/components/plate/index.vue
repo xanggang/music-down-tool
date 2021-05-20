@@ -2,7 +2,7 @@
   <div class="plate-wrap">
     <div>
       <div class="img-wrap">
-        <img src="../../../assets/img/no-data.svg" alt="">
+        <img src="../../assets/img/no-data.svg" alt="">
       </div>
       <div class="msg">没有搜索结果哦</div>
     </div>

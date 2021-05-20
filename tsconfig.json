@@ -23,6 +23,7 @@
         "src/*"
       ]
     },
+    "typeRoots": ["./node_modules/@types/", "./src/types"],
     "lib": [
       "esnext",
       "dom",

@@ -1,7 +1,7 @@
 <template>
   <div class="layer-menu">
     <div class="logo">
-      <img src="../../../assets/img/logo.png" alt="">
+      <img src="../../assets/img/logo.png" alt="">
     </div>
     <div class="menu-item-wrap">
       <div
