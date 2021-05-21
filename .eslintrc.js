@@ -27,6 +27,7 @@ module.exports = {
     'no-trailing-spaces': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/no-use-before-define': 'off',
     'vue/script-indent': ['error', 2, { // script缩进配置
       baseIndent: 0,
       ignores: ['SwitchCase']

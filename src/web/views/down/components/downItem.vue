@@ -1,0 +1,181 @@
+<template>
+  <div class="down-item-container" v-on="bindMouseEvent">
+    <div class="down-item-operating">
+      <div :class="['name', {'is-unfold': hover }]">
+        {{ downItem.downItemInfo.fileName }}
+      </div>
+      <div :class="['operating-wrap', {'active': hoverItem }]" v-on="bindItemMouseEvent">
+        <Icon icon="icon-kuaijin-" :active="false"></Icon>
+        <Icon icon="icon-kuaijin-" :active="false"></Icon>
+        <Icon icon="icon-kuaijin-" :active="false"></Icon>
+      </div>
+    </div>
+    <a-progress
+      :percent="downItem.progressInfo.progress"
+      status="active"
+      :show-info="false"
+      :stroke-color="{
+        '0%': '#4CAF50',
+        '100%': '#009688',
+      }"
+    />
+    <div class="progress-info">
+      <span>{{ downItem.progressInfo.speed }} / </span>
+      <span>total: {{ downItem.progressInfo.total }}</span>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import useHover from '@/web/use/useHover'
+import { computed, defineComponent, PropType } from 'vue'
+import { useVendorToCn } from '@/web/use/toCn'
+import Icon from '@/web/components/Icon/index.vue'
+import { IStoreDownItemType } from '@/types/downTypes'
+import Api from '@/electorn/enums/ApiEnums'
+import { message } from 'ant-design-vue'
+import { useStore } from '@/web/store'
+const { ipcRenderer } = window.require('electron')
+
+export default defineComponent({
+  name: 'DownItem',
+  components: { Icon },
+  props: {
+    downItem: {
+      type: Object as PropType<IStoreDownItemType>,
+      required: true
+    }
+  },
+  setup (props) {
+    const { hover, bindMouseEvent } = useHover()
+    const { hover: hoverItem, bindMouseEvent: bindItemMouseEvent } = useHover()
+
+    const state = computed(() => props.downItem.downItemInfo.state)
+    const iconSrc = computed(() => props.downItem.downItemInfo.icon)
+
+    const {
+      handleOpenFileFolder,
+      handlePause,
+      handleResume,
+      handleDelete,
+      handleCancel
+    } = useDownItemManager(props.downItem)
+
+    return {
+      hover,
+      bindMouseEvent,
+      hoverItem,
+      bindItemMouseEvent,
+      useVendorToCn,
+
+      state,
+      iconSrc,
+
+      handleOpenFileFolder,
+      handlePause,
+      handleResume,
+      handleDelete,
+      handleCancel
+    }
+  }
+})
+
+function useDownItemManager (downItem: IStoreDownItemType) {
+  const store = useStore()
+  const uuid = computed(() => downItem.downItemInfo.uuid)
+
+  // 打开文件所在目录
+  const handleOpenFileFolder = () => {
+    const res = ipcRenderer.sendSync(Api.ToolApi.V_OPEN_FOLDER, downItem.downItemInfo.savePath)
+    if (res === 'failed') message.error('文件夹不存在')
+  }
+
+  // 暂停下载
+  const handlePause = () => {
+    store.dispatch('down/handleDownPause', uuid.value)
+  }
+
+  // 继续下载
+  const handleResume = () => {
+    store.dispatch('down/handleDownResume', uuid.value)
+  }
+
+  // 删除下载任务
+  const handleDelete = () => {
+    store.dispatch('down/handleDownDelete', uuid.value)
+  }
+
+  // 取消下载
+  const handleCancel = () => {
+    store.dispatch('down/handleDownCancel', uuid.value)
+  }
+
+  return {
+    handleOpenFileFolder,
+    handlePause,
+    handleResume,
+    handleDelete,
+    handleCancel
+  }
+}
+</script>
+
+<style scoped lang="less">
+@import '~@/web/style/palette.less';
+.down-item-container {
+  width: 100%;
+  padding: 10px;
+  background: @background-color-base;
+  box-sizing: border-box;
+  transition: all 0.2s;
+  border: 1px solid rgba(117, 117, 117, 0.36);
+  margin-bottom: 10px;
+
+  &:hover {
+    border-color: @accent-color;
+    box-shadow: 0 0 10px @light-primary-color, 0 0 5px @default-primary-color;
+  }
+
+  .down-item-operating {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    & > div {
+      flex-shrink: 0;
+    }
+
+    .name {
+      max-width: 80%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space: nowrap;
+      text-align: left;
+    }
+
+    .operating-wrap {
+      width: 120px;
+      height: 26px;
+      border-radius: 15px;
+      border: 1px solid #c9fcf6;
+      transition: all 0.5s;
+      color: #c9fcf6;
+
+      &.active {
+        background:#009688 ;
+        color: #fff;
+      }
+
+      & > span {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .progress-info {
+    text-align: right;
+    font-size: 12px;
+    color: @secondary-text-color;
+  }
+}
+</style>

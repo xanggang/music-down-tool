@@ -2185,6 +2185,21 @@
   resolved "https://npm.code.hzmantu.com/@vue%2fweb-component-wrapper/-/web-component-wrapper-1.2.0.tgz#bb0e46f1585a7e289b4ee6067dcc5a6ae62f1dd1"
   integrity sha512-Xn/+vdm9CjuC9p3Ae+lTClNutrVhsXpzxvoTXXtoys6kVRX9FkueSUAqSWAyZntmVLlR4DosBV4pH8y5Z/HbUw==
 
+"@vueuse/core@^4.11.0":
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/@vueuse/core/-/core-4.11.0.tgz#2fbfdbeafe7d0a975a901cb56de76226fc4bdf10"
+  integrity sha512-a2/NHE3LjZ73LKGU1Ef2mz11ilIxs4pRIv1OUf98Sfvg6+GqA3R2VzIExswVlU3555GYIErmmJDywEHLsyii6w==
+  dependencies:
+    "@vueuse/shared" "4.11.0"
+    vue-demi "*"
+
+"@vueuse/shared@4.11.0":
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/@vueuse/shared/-/shared-4.11.0.tgz#d5c453ac1c15e513d625f8035ec22c7562fd8441"
+  integrity sha512-WKyOxTWuAiOLTp9Eg6RYabtZBSiJyt9EgFZEMD8fSlZ1FAckg0Ntya3HLfTDkPBjOqVe3pMdOsAbLwsU+7Fwyw==
+  dependencies:
+    vue-demi "*"
+
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
   resolved "https://npm.code.hzmantu.com/@webassemblyjs%2fast/-/ast-1.9.0.tgz#bd850604b4042459a5a41cd7d338cbed695ed964"
@@ -6998,11 +7013,6 @@ hosted-git-info@^4.0.1:
   integrity sha512-c9OGXbZ3guC/xOlCg1Ci/VgWlwsqDv1yMQL1CWqXDL0hDjXuNcq0zuR4xqPSuasI3kqFDhqSyTjREz5gzq0fXg==
   dependencies:
     lru-cache "^6.0.0"
-
-howler@^2.2.1:
-  version "2.2.1"
-  resolved "https://npm.code.hzmantu.com/howler/-/howler-2.2.1.tgz#a521a9b495841e8bb9aa12e651bebba0affc179e"
-  integrity sha512-0iIXvuBO/81CcrQ/HSSweYmbT50fT2mIc9XMFb+kxIfk2pW/iKzDbX1n3fZmDXMEIpYvyyfrB+gXwPYSDqUxIQ==
 
 hpack.js@^2.1.6:
   version "2.1.6"
@@ -13107,6 +13117,11 @@ vue-cli-plugin-electron-builder@~2.0.0-rc.5:
     webpack-chain "^6.0.0"
     webpack-merge "^4.2.2"
     yargs "^15.3.1"
+
+vue-demi@*:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.9.0.tgz#b30da61450079d60a132d7aaf9e86d1949e8445e"
+  integrity sha512-f8vVUpC726YXv99fF/3zHaw5CUYbP5H/DVWBN+pncXM8P2Uz88kkffwj9yD7MukuVzPICDHNrgS3VC2ursaP7g==
 
 vue-eslint-parser@^7.0.0, vue-eslint-parser@^7.3.0:
   version "7.3.0"

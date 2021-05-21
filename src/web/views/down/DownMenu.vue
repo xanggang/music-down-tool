@@ -23,25 +23,34 @@
 <script lang="ts">
 import { computed, defineComponent, reactive, toRefs } from 'vue'
 import Icon from '@/web/components/Icon/index.vue'
+const menuList = [
+  {
+    name: '下载中',
+    icon: 'icon-kuaijin-',
+    state: 'downing'
+  },
+  {
+    name: '等待中',
+    icon: 'icon-zanting-1',
+    state: 'padding'
+  },
+  {
+    name: '已停止',
+    icon: 'icon-dianshiju-',
+    state: 'complete'
+  }
+]
 
 export default defineComponent({
   name: 'DownMenu',
   components: { Icon },
-  setup () {
-    const menuList = [
-      {
-        name: '下载中',
-        icon: 'icon-kuaijin-'
-      },
-      {
-        name: '等待中',
-        icon: 'icon-zanting-1'
-      },
-      {
-        name: '已停止',
-        icon: 'icon-dianshiju-'
-      }
-    ]
+  props: {
+    dowState: {
+      type: String,
+      default: 'downing'
+    }
+  },
+  setup (prpos, { emit }) {
     const state = reactive({
       active: 'index',
       activeIndex: 0,
@@ -51,6 +60,7 @@ export default defineComponent({
 
     const handleLink = (item: any, index: number) => {
       state.activeIndex = index
+      emit('update:modelValue', item.state)
     }
 
     return {
@@ -67,14 +77,13 @@ export default defineComponent({
 .down-menu-main {
   width: 120px;
   height: 100%;
-  padding-top: 40px;
   background: @background-color-base;
 
   .down-menu-title {
     height: 40px;
     padding-left: 15px;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-size: 16px;
     color: @primary-text-color;
     text-align: left;
@@ -119,7 +128,7 @@ export default defineComponent({
       z-index: 1;
       left: 10px;
       top: 0;
-      background: #DDDEDEFF;
+      background: rgba(221, 222, 222, 0.8);
     }
   }
 }

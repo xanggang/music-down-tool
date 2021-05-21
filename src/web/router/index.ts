@@ -1,14 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 const routes: Array<RouteRecordRaw> = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: () => import(/* webpackChunkName: "about1" */ '../views/home/index.vue')
-  // },
   {
     path: '/about',
     name: 'About',
-    component: () => import(/* webpackChunkName: "about2" */ '../views/music/index.vue')
+    component: () => import(/* webpackChunkName: "about2" */ '../views/home/index.vue')
   },
   {
     path: '/search',
@@ -33,7 +28,8 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
+  scrollBehavior: () => ({ left: 0, top: 0 })
 })
 
 export default router

@@ -1,5 +1,5 @@
 <template>
-  <span v-on="bindMouseEvent">
+  <span v-on="bindMouseEvent" class="icon-container">
     <svg class="icon menu-item-icon" aria-hidden="true" v-if="isActive">
       <use :xlink:href="`#${icon}`"></use>
     </svg>
@@ -37,6 +37,10 @@ export default defineComponent({
 
 <style scoped lang="less">
 @import '~@/web/style/palette.less';
+
+.icon-container {
+  cursor: pointer;
+}
 
 .menu-item-icon {
   box-shadow: 0 0 10px @light-primary-color, 0 0 5px @default-primary-color;
