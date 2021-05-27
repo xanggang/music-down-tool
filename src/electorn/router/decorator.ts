@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import type { ipcMain as IpcMainType, IpcMainEvent } from 'electron'
 import getDownLoadManager, { DownLoadManagerClass } from '../DownloadManager'
 import type { IcpContentxType } from '@/types/icpContentxType'
+import type { IDbType } from '@/types/db'
 
 const PATH_METADATA = 'path'
 
@@ -13,8 +14,8 @@ const Ipc = (path: string): MethodDecorator => {
 
 function getCtx () {
   const ctx: IcpContentxType = {
-    db: global.db,
-    config: global.db.get('sysConfig').value(),
+    db: global.db as IDbType,
+    config: global.db.userConfig,
     downLoadManager: {} as DownLoadManagerClass
   }
   const downLoadManager = getDownLoadManager(ctx)

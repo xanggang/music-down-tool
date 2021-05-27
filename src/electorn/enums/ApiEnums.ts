@@ -1,7 +1,8 @@
 
 const ConfigApi = {
   // 修改系统配置， 这个是渲染进程主动获取的
-  V_CHANG_SYS_SETTING: 'view:chang_sys_setting',
+  V_CHANG_SYS_SETTING_START: 'view:chang_sys_setting_start',
+  V_CHANG_SYS_SETTING_END: 'view:chang_sys_setting_end',
   // 改变系统配置，这个是由主进程推送的
   M_CHANG_SYS_SETTING: 'main:chang_sys_setting'
 }

@@ -78,14 +78,22 @@ export class DownLoadManagerClass extends BaseController {
         }
         // 如果状态变更， 啧同步状态
         if (queueItem.state === 'waitdown' || state === 'interrupted') {
-          // todo 历史记录存储
+          this.db.downList.update({ 'option.uuid': queueItem.uuid }, {
+            $set: {
+              'option.state': state
+            }
+          })
         }
         queueItem.state = state
         queueItem.onProgress(progress, downInfo)
       })
 
       item.on('done', async (e: any, state: any) => {
-        // todo 历史记录存储
+        this.db.downList.update({ 'option.uuid': queueItem.uuid }, {
+          $set: {
+            'option.state': state
+          }
+        })
         queueItem.onFinishedDownload({
           uuid: queueItem.uuid,
           url: item.getURL(),
@@ -114,14 +122,15 @@ export class DownLoadManagerClass extends BaseController {
    * 保存加载记录， 状态是
    * @param option
    */
-  addDownLoadTask (option: IDownQueueItem) {
+  async addDownLoadTask (option: IDownQueueItem) {
     const webContents = this.getWebContents()
     this.queue.push(option)
-    this.ctx.db.get('downList').push({
+    const item = {
       option,
       progressInfo: {},
       downItemInfo: {}
-    }).write()
+    }
+    await this.db.insertDownItem(item)
     webContents.downloadURL(option.url)
   }
 

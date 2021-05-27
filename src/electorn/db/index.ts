@@ -1,30 +1,85 @@
-import lowdb, { LowdbSync } from 'lowdb'
-import FileSync from 'lowdb/adapters/FileSync'
+import Datastore from 'nedb'
 import path from 'path'
 import fs from 'fs-extra'
-import lodashId from 'lodash-id'
 import { app } from 'electron'
+import { IDown, IUserConfig } from '@/types/db'
 
-import type { IDBData } from '@/types/db'
+export default class Db {
+  userConfig: Nedb<IUserConfig>
+  sysConfig: Nedb<any>
+  downList: Nedb<IDown>
+  playList: Nedb<any[]>
 
-export default function (): LowdbSync<IDBData> {
-  const bastDir = global.userBasePath
-  if (!fs.pathExistsSync(bastDir)) { // 如果不存在路径
-    fs.mkdirpSync(bastDir) // 就创建
+  constructor () {
+    const bastDir = global.userBasePath
+    if (!fs.pathExistsSync(bastDir)) { // 如果不存在路径
+      fs.mkdirpSync(bastDir) // 就创建
+    }
+    this.userConfig = new Datastore({
+      filename: path.join(bastDir, '/userConfig.json'),
+      autoload: true
+    })
+    this.sysConfig = new Datastore({
+      filename: path.join(bastDir, '/sysConfig.json'),
+      autoload: true
+    })
+    this.downList = new Datastore({
+      filename: path.join(bastDir, '/downList.json'),
+      autoload: true
+    })
+    this.playList = new Datastore({
+      filename: path.join(bastDir, '/playList.json'),
+      autoload: true
+    })
+
+    this.initData()
   }
-  const filePath = path.join(bastDir, '/data.json')
-  console.log(`\x1b[42;30m 数据文件地址 \x1b[40;32m ${filePath}\x1B[0m`)
 
-  const adapter = new FileSync(filePath)
-  const db = lowdb(adapter)
-  db._.mixin(lodashId)
-  // 设置默认配置
-  db.defaults({
-    downloadFolder: app.getPath('userData'),
-    userBasePath: '',
-    sysConfig: '',
-    downList: []
-  }).write()
+  initData () {
+    this.userConfig.find({}, (err: Error | null, docs: any) => {
+      if (err) throw err
+      if (docs.length === 0) {
+        this.userConfig.insert({
+          downloadFolder: app.getPath('userData')
+        })
+      }
+    })
+  }
 
-  return db
+  /**
+   * 获取系统配置
+   */
+  getSysConfig (): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.userConfig.find({}, (err: Error | null, docs: IUserConfig[]) => {
+        if (err) reject(err)
+        if (docs.length) resolve(docs[0].downloadFolder)
+        else resolve('')
+      })
+    })
+  }
+
+  /**
+   * 下载列表
+   */
+  getDownList (): Promise<IDown[]> {
+    return new Promise((resolve, reject) => {
+      this.downList.find({}, (err: Error | null, docs: IDown[]) => {
+        if (err) reject(err)
+        else resolve(docs)
+      })
+    })
+  }
+
+  /**
+   * 添加一条下载记录
+   */
+  insertDownItem (downItem: IDown) {
+    return new Promise((resolve, reject) => {
+      this.downList.insert(downItem, (err: Error | null, docs) => {
+        if (err) reject(err)
+        resolve(docs)
+      })
+    })
+  }
 }

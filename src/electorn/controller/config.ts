@@ -26,11 +26,12 @@ export default class ConfigController extends BaseController {
    * 获取系统设置渲染进程主动获取相关配置
    * @param event
    */
-  @Ipc(Api.ConfigApi.V_CHANG_SYS_SETTING)
-  onSendSysConfig (event: IpcMainEvent) {
-    const config = global.db.get('sysConfig').value()
-    event.returnValue = config
-    this.setWebMsg(Api.ConfigApi.M_CHANG_SYS_SETTING, config)
+  @Ipc(Api.ConfigApi.V_CHANG_SYS_SETTING_START)
+  async onSendSysConfig (event: IpcMainEvent) {
+    const config = await this.ctx.db.getSysConfig()
+    console.log({ config })
+    event.sender.send(Api.ConfigApi.V_CHANG_SYS_SETTING_END, config)
+    // this.setWebMsg(Api.ConfigApi.M_CHANG_SYS_SETTING, config)
   }
 
   /**

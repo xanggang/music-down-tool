@@ -8,9 +8,9 @@ import type { IProgressParType, IDownQueueItem, IDownItemInfoType, IDownItemOpti
 
 export default class DownFileController extends BaseController {
   @Ipc(Api.DownFileApi.V_DOWN_FILE)
-  downFile (event: IpcMainEvent, options: IDownItemOptions) {
+  async downFile (event: IpcMainEvent, options: IDownItemOptions) {
     console.log('添加下载任务', options)
-    const downloadFolder = options.downloadFolder || this.db.get('downloadFolder').value()
+    const downloadFolder = options.downloadFolder || await this.db.getSysConfig()
     const item: IDownQueueItem = {
       uuid: options.uuid,
       state: 'waitdown',

@@ -32,6 +32,11 @@ export default class BaseController {
     return win.webContents
   }
 
+  /**
+   * 向浏览器发送消息
+   * @param type
+   * @param data
+   */
   setWebMsg (type: string, data: any) {
     const win = this.getBrowserWindow()
     if (!win) {
