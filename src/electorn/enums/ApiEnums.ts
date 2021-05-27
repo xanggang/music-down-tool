@@ -15,6 +15,9 @@ const DownFileApi = {
   // 暂停下载
   V_PAUSE_DOWN: 'view:pause_down',
 
+  // 全部暂停
+  V_PAUSE_ALL: 'view:pause_all',
+
   // 继续下载
   V_RESUME_DOWN: 'view:resume_down',
 

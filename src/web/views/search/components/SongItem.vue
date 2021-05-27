@@ -5,9 +5,9 @@
         <div class="col-wrap between">
           <div :class="['name', {'is-unfold': hover }]"> {{ song.name }} </div>
           <div class="operating-wrap" v-show="hover">
-            <Icon :need-hover="true" icon="icon-bofang-" @click="$emit('down-song', song)"></Icon>
-            <Icon :need-hover="true" icon="icon-hualang"></Icon>
-            <Icon :need-hover="true" icon="icon-maikefeng-"></Icon>
+            <Icon :need-hover="true" icon="icon-xiazai1" @click="$emit('down-song', song)"></Icon>
+            <Icon :need-hover="true" icon="icon-shoucang"></Icon>
+            <Icon :need-hover="true" icon="icon-bofang-"></Icon>
           </div>
         </div>
       </a-col>

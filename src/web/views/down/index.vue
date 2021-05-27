@@ -7,9 +7,17 @@
           {{ filterDownState(downState) }}
         </div>
         <div class="operating-wrap">
-          <Icon icon="icon-kuaijin-" :active="false"></Icon>
-          <Icon icon="icon-kuaijin-" :active="false"></Icon>
-          <Icon icon="icon-kuaijin-" :active="false"></Icon>
+          <a-tooltip color="#00796B" title="全部开始">
+            <Icon icon="icon-bofang1" />
+          </a-tooltip>
+
+          <a-tooltip color="#00796B" title="全部暂停">
+            <Icon icon="icon-zanting1" @click="handlePauseAll" />
+          </a-tooltip>
+
+          <a-tooltip color="#00796B" title="清空记录">
+            <Icon icon="icon-qingkong" />
+          </a-tooltip>
         </div>
       </div>
       <div class="down-wrap">
@@ -53,7 +61,8 @@ export default defineComponent({
       downState,
       downInfoList,
       testDown,
-      filterDownState
+      filterDownState,
+      handlePauseAll
     }
   }
 })
@@ -65,6 +74,12 @@ const filterDownState = (state: 'padding' | 'downing' | 'complete') => {
     complete: '下载完成'
   }
   return map[state] as string
+}
+
+// 暂停全部下载
+const handlePauseAll = () => {
+  const store = useStore()
+  store.dispatch('down/handlePauseAll')
 }
 
 </script>
@@ -88,7 +103,7 @@ const filterDownState = (state: 'padding' | 'downing' | 'complete') => {
 
     .title-wrap {
       width: 100%;
-      border-bottom: 2px solid @divider-color;
+      border-bottom: 1px solid @divider-color;
       text-align: left;
       margin-bottom: 10px;
       display: flex;
@@ -107,9 +122,14 @@ const filterDownState = (state: 'padding' | 'downing' | 'complete') => {
         align-items: center;
         justify-content: center;
         color: @secondary-text-color;
+        font-size: 20px;
 
         & > span {
           margin-right: 15px;
+
+          & > span {
+            font-size: 20px !important;
+          }
         }
       }
     }

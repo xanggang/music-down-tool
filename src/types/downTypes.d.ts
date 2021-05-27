@@ -22,6 +22,9 @@ export interface IDownItemOptions {
   path: string;
   fileName: string;
   downloadFolder?: string;
+  // 区别于IDownItemInfoType的state， 这里的是整体的状态
+  // 在IDownItemInfoType还不在的时候，这个就已经存在了
+  state: IDownStatusType;
 }
 
 // 下载任务队列

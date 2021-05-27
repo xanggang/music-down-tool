@@ -5,14 +5,16 @@
         {{ downItem.downItemInfo.fileName }}
       </div>
       <div :class="['operating-wrap', {'active': hoverItem }]" v-on="bindItemMouseEvent">
-        <Icon icon="icon-kuaijin-" :active="false"></Icon>
-        <Icon icon="icon-kuaijin-" :active="false"></Icon>
-        <Icon icon="icon-kuaijin-" :active="false"></Icon>
+        <Icon icon="icon-bofang1" @click="handleResume" />
+        <Icon icon="icon-zanting1" @click="handlePause" />
+        <Icon icon="icon-shanchu1" @click="handleDelete"/>
+        <Icon icon="icon-wenjianjia1" @click="handleOpenFileFolder"/>
+        <!-- todo 复制链接 <Icon icon="icon-lianjie" />-->
       </div>
     </div>
     <a-progress
       :percent="downItem.progressInfo.progress"
-      status="active"
+      :status="progressStatus"
       :show-info="false"
       :stroke-color="{
         '0%': '#4CAF50',
@@ -53,6 +55,12 @@ export default defineComponent({
     const state = computed(() => props.downItem.downItemInfo.state)
     const iconSrc = computed(() => props.downItem.downItemInfo.icon)
 
+    const progressStatus = computed(() => {
+      if (state.value === 'progressing') return 'active'
+      if (state.value === 'completed') return 'success'
+      return 'normal'
+    })
+
     const {
       handleOpenFileFolder,
       handlePause,
@@ -70,6 +78,7 @@ export default defineComponent({
 
       state,
       iconSrc,
+      progressStatus,
 
       handleOpenFileFolder,
       handlePause,
@@ -154,15 +163,18 @@ function useDownItemManager (downItem: IStoreDownItemType) {
     }
 
     .operating-wrap {
-      width: 120px;
       height: 26px;
+      padding: 0 20px;
       border-radius: 15px;
-      border: 1px solid #c9fcf6;
+      border: 1px solid @divider-color;
       transition: all 0.5s;
-      color: #c9fcf6;
+      font-size: 16px;
+      line-height: 26px;
+      color: @divider-color;
 
       &.active {
         background:#009688 ;
+        border-color: @default-primary-color;
         color: #fff;
       }
 

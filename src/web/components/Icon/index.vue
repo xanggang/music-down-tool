@@ -18,7 +18,7 @@ export default defineComponent({
     active: Boolean,
     needHover: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   setup (props) {
@@ -43,7 +43,11 @@ export default defineComponent({
 }
 
 .menu-item-icon {
-  box-shadow: 0 0 10px @light-primary-color, 0 0 5px @default-primary-color;
+  //box-shadow: 0 0 10px @light-primary-color, 0 0 5px @default-primary-color;
   cursor: pointer;
+}
+
+.iconfont {
+  font-size: unset;
 }
 </style>

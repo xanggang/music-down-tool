@@ -88,6 +88,7 @@ const globalDownModule: Module<IGlobalDownType, any> = {
       const { ext, name } = fileUtils.getFileNameTool(url)
       const queueItem: IDownItemOptions = {
         uuid: uuidv4(),
+        state: 'waitdown',
         url: url,
         type: type,
         path: 'electronDown',
@@ -144,6 +145,11 @@ const globalDownModule: Module<IGlobalDownType, any> = {
       if (res === 'success') commit('DOWN_CANCEL', uuid)
       else message.error(res)
     },
+    handlePauseAll ({ commit }) {
+      const res: string[] | 'failed' = ipcRenderer.sendSync(Api.DownFileApi.V_PAUSE_ALL)
+      if (res === 'failed') message.error('全部暂停操作失败')
+      else res.forEach(uuid => commit('DOWN_PAUSE', uuid))
+    },
     testDown ({ dispatch }) {
       // const a = 'https://freetyst.nf.migu.cn/public/product9th/product42/2021/01/2612/2009年06月26日博尔普斯/歌曲下载/MP3_40_16_Stero/60054701938124543.mp3?key=49979f81e373c100&Tim=1619349468395&channelid=00&msisdn=e5582e73d8eb4ee2a1cee25e508c6ebb&CI=600547019382600902000006889306&F=000009'
       // const c = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/ljlYFjMmWelwE0Jc-Ts6m-OUJEV3.jpg'
@@ -167,7 +173,7 @@ const globalDownModule: Module<IGlobalDownType, any> = {
         {
           url: d,
           type: 'img'
-        },
+        }
         // {
         //   url: e,
         //   type: 'mp3'

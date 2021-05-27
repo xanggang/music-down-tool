@@ -18,12 +18,12 @@ export default function (): LowdbSync<IDBData> {
   const adapter = new FileSync(filePath)
   const db = lowdb(adapter)
   db._.mixin(lodashId)
-
   // 设置默认配置
   db.defaults({
     downloadFolder: app.getPath('userData'),
     userBasePath: '',
-    sysConfig: ''
+    sysConfig: '',
+    downList: []
   }).write()
 
   return db

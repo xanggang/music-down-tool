@@ -13,6 +13,7 @@ export default class DownFileController extends BaseController {
     const downloadFolder = options.downloadFolder || this.db.get('downloadFolder').value()
     const item: IDownQueueItem = {
       uuid: options.uuid,
+      state: 'waitdown',
       url: options.url,
       type: options.type,
       path: options.path,
@@ -86,6 +87,16 @@ export default class DownFileController extends BaseController {
         return false
       }
       shell.showItemInFolder(path) // 打开文件所在文件夹
+    } catch {
+      event.returnValue = 'failed'
+    }
+  }
+
+  @Ipc(Api.DownFileApi.V_PAUSE_ALL)
+  async handlePauseAll (event: IpcMainEvent) {
+    try {
+      const uuidList = this.ctx.downLoadManager.onPauseAll()
+      event.returnValue = uuidList || []
     } catch {
       event.returnValue = 'failed'
     }

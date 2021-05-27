@@ -1,7 +1,10 @@
 import path from 'path'
 import { DownloadItem } from 'electron'
 import BaseController from '@/electorn/controller/base'
+import _ from 'lodash'
 import type { IDownQueueItem, IProgressParType, IDownItemInfoType } from '@/types/downTypes'
+import { IDownItemOptions } from '@/types/downTypes'
+import * as uuid from 'uuid'
 
 // 转换数据大小格式
 const bytesToSize = (bytes: number, decimals?: number) => {
@@ -18,8 +21,8 @@ interface IDownInfoMap {
 }
 
 export class DownLoadManagerClass extends BaseController {
-  queue: IDownQueueItem[] = []
-  downInfoMap: IDownInfoMap = {}
+  queue: IDownQueueItem[] = [] //  下载队列， 这里面是加入队列但是还没有开始下载的
+  downInfoMap: IDownInfoMap = {} // electron的下载管理的脆响
 
   constructor (ctx: any) {
     super(ctx)
@@ -44,7 +47,7 @@ export class DownLoadManagerClass extends BaseController {
       const totalBytes = item.getTotalBytes()
       let receivedBytes = 0
 
-      item.on('updated', (event: Event, state: any) => {
+      item.on('updated', (event: Event, state) => {
         const currentReceivedBytes = item.getReceivedBytes() // 已经下载的字节数
         const speedValue = currentReceivedBytes - receivedBytes // 上次-这次=速度
         receivedBytes = currentReceivedBytes // 记录
@@ -73,10 +76,16 @@ export class DownLoadManagerClass extends BaseController {
           isUserPause: false,
           state
         }
+        // 如果状态变更， 啧同步状态
+        if (queueItem.state === 'waitdown' || state === 'interrupted') {
+          // todo 历史记录存储
+        }
+        queueItem.state = state
         queueItem.onProgress(progress, downInfo)
       })
 
       item.on('done', async (e: any, state: any) => {
+        // todo 历史记录存储
         queueItem.onFinishedDownload({
           uuid: queueItem.uuid,
           url: item.getURL(),
@@ -102,11 +111,17 @@ export class DownLoadManagerClass extends BaseController {
 
   /**
    * 添加一个下载任务
+   * 保存加载记录， 状态是
    * @param option
    */
-  addDownLoadTask (option: any) {
+  addDownLoadTask (option: IDownQueueItem) {
     const webContents = this.getWebContents()
     this.queue.push(option)
+    this.ctx.db.get('downList').push({
+      option,
+      progressInfo: {},
+      downItemInfo: {}
+    }).write()
     webContents.downloadURL(option.url)
   }
 
@@ -159,12 +174,31 @@ export class DownLoadManagerClass extends BaseController {
     const downloadItem = this.downInfoMap[uuid]
 
     if (!downloadItem) {
-      throw new Error(`恢复下载失败，${uuid}不存在`)
+      throw new Error(`取消下载失败，${uuid}不存在`)
     }
 
     downloadItem.cancel()
     delete this.downInfoMap[uuid]
     return true
+  }
+
+  /**
+   * 暂停全部任务
+   */
+  onPauseAll () {
+    const uuidList: string[] = []
+    Object.entries(this.downInfoMap)
+      .forEach(([key, downloadItem]) => {
+        try {
+          if (!downloadItem.isPaused()) {
+            downloadItem.pause()
+            uuidList.push(key)
+          }
+        } catch (err) {
+          throw new Error(`${key}暂停失败`)
+        }
+      })
+    return uuidList
   }
 }
 
