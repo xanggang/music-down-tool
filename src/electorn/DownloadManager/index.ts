@@ -1,10 +1,7 @@
 import path from 'path'
 import { DownloadItem } from 'electron'
 import BaseController from '@/electorn/controller/base'
-import _ from 'lodash'
 import type { IDownQueueItem, IProgressParType, IDownItemInfoType } from '@/types/downTypes'
-import { IDownItemOptions } from '@/types/downTypes'
-import * as uuid from 'uuid'
 
 // 转换数据大小格式
 const bytesToSize = (bytes: number, decimals?: number) => {
@@ -48,6 +45,7 @@ export class DownLoadManagerClass extends BaseController {
       let receivedBytes = 0
 
       item.on('updated', (event: Event, state) => {
+        console.log({ state })
         const currentReceivedBytes = item.getReceivedBytes() // 已经下载的字节数
         const speedValue = currentReceivedBytes - receivedBytes // 上次-这次=速度
         receivedBytes = currentReceivedBytes // 记录
@@ -80,7 +78,8 @@ export class DownLoadManagerClass extends BaseController {
         if (queueItem.state === 'waitdown' || state === 'interrupted') {
           this.db.downList.update({ 'option.uuid': queueItem.uuid }, {
             $set: {
-              'option.state': state
+              'option.state': queueItem.state,
+              downItemInfo: downInfo
             }
           })
         }
@@ -208,6 +207,20 @@ export class DownLoadManagerClass extends BaseController {
         }
       })
     return uuidList
+  }
+
+  /**
+   * 清除全部下载记录
+   */
+  async onClearAll () {
+    await this.db.deleteAllDownItem()
+  }
+
+  /**
+   * 获取下载记录， 一般用于启动的时候从数据库同步下载记录
+   */
+  async onGetDownHistoryList () {
+    return await this.db.getAllDownItem()
   }
 }
 

@@ -16,7 +16,7 @@
           </a-tooltip>
 
           <a-tooltip color="#00796B" title="清空记录">
-            <Icon icon="icon-qingkong" />
+            <Icon icon="icon-qingkong" @click="handleClearAll"/>
           </a-tooltip>
         </div>
       </div>
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, onMounted } from 'vue'
 import DownMenu from './DownMenu.vue'
 import DownItem from './components/downItem.vue'
 import Icon from '@/web/components/Icon/index.vue'
@@ -56,13 +56,28 @@ export default defineComponent({
       store.dispatch('down/testDown')
     }
 
+    onMounted(() => {
+      store.dispatch('down/handleGetDownHistoryList')
+    })
+
+    // 暂停全部下载
+    const handlePauseAll = () => {
+      store.dispatch('down/handlePauseAll')
+    }
+
+    // 清除
+    const handleClearAll = () => {
+      store.dispatch('down/handleClearAll')
+    }
+
     return {
       downloadingList,
       downState,
       downInfoList,
       testDown,
       filterDownState,
-      handlePauseAll
+      handlePauseAll,
+      handleClearAll
     }
   }
 })
@@ -74,12 +89,6 @@ const filterDownState = (state: 'padding' | 'downing' | 'complete') => {
     complete: '下载完成'
   }
   return map[state] as string
-}
-
-// 暂停全部下载
-const handlePauseAll = () => {
-  const store = useStore()
-  store.dispatch('down/handlePauseAll')
 }
 
 </script>

@@ -28,6 +28,14 @@ const DownFileApi = {
   // 取消任务
   V_CANCEL_DOWN: 'view:cancel_down',
 
+  // 清空全部下载记录
+  V_CLEAR_ALL_START: 'view:clear_all_start',
+  V_CLEAR_ALL_END: 'view:clear_all_end',
+
+  // 获取下载记录
+  V_GET_DOWN_LIST_START: 'view:get_down_list_start',
+  V_GET_DOWN_LIST_END: 'view:get_down_list_end',
+
   // 下载进度条事件
   M_DOWN_PROGRESS: 'main:down_progress_change',
 

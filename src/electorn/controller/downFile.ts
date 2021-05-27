@@ -87,6 +87,7 @@ export default class DownFileController extends BaseController {
         return false
       }
       shell.showItemInFolder(path) // 打开文件所在文件夹
+      event.returnValue = 'success'
     } catch {
       event.returnValue = 'failed'
     }
@@ -99,6 +100,28 @@ export default class DownFileController extends BaseController {
       event.returnValue = uuidList || []
     } catch {
       event.returnValue = 'failed'
+    }
+  }
+
+  @Ipc(Api.DownFileApi.V_CLEAR_ALL_START)
+  async handleClearAll (event: IpcMainEvent) {
+    try {
+      this.ctx.downLoadManager.onClearAll()
+      event.sender.send(Api.DownFileApi.V_CLEAR_ALL_END, true)
+    } catch (err) {
+      console.error(err)
+      event.sender.send(Api.DownFileApi.V_CLEAR_ALL_END, false)
+    }
+  }
+
+  @Ipc(Api.DownFileApi.V_GET_DOWN_LIST_START)
+  async handleGetDownHistoryList (event: IpcMainEvent) {
+    try {
+      const res = await this.ctx.downLoadManager.onGetDownHistoryList()
+      event.sender.send(Api.DownFileApi.V_GET_DOWN_LIST_END, res)
+    } catch (err) {
+      console.error(err)
+      event.sender.send(Api.DownFileApi.V_GET_DOWN_LIST_END, [])
     }
   }
 }

@@ -77,6 +77,35 @@ export default class Db {
   insertDownItem (downItem: IDown) {
     return new Promise((resolve, reject) => {
       this.downList.insert(downItem, (err: Error | null, docs) => {
+        console.log('insertDownItem')
+        if (err) reject(err)
+        resolve(docs)
+      })
+    })
+  }
+
+  /**
+   * 删除全部下载记录
+   * 不删除正在下载的和等待下载的
+   */
+  deleteAllDownItem () {
+    return new Promise((resolve, reject) => {
+      const query = {
+        'option.state': { $in: ['completed', 'cancelled', 'interrupted'] }
+      }
+      this.downList.remove(query, { multi: true }, (err: Error | null, docs) => {
+        if (err) reject(err)
+        resolve(docs)
+      })
+    })
+  }
+
+  /**
+   * 获取全部的下载记录
+   */
+  getAllDownItem () {
+    return new Promise((resolve, reject) => {
+      this.downList.find({}, (err: Error | null, docs: IDown[]) => {
         if (err) reject(err)
         resolve(docs)
       })

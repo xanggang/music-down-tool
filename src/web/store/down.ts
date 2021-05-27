@@ -1,6 +1,7 @@
 import { Module } from 'vuex'
 import { toRaw } from 'vue'
 import Api from '@/electorn/enums/ApiEnums'
+import * as DownApi from '@/web/api/down'
 import { v4 as uuidv4 } from 'uuid'
 import * as fileUtils from '@/web/util/fileUtil'
 import { message } from 'ant-design-vue'
@@ -81,6 +82,14 @@ const globalDownModule: Module<IGlobalDownType, any> = {
       if (!item) return
       item.downItemInfo.state = 'cancelled'
       item.downItemInfo.isUserPause = false
+    },
+    // 清除下载记录
+    DOWN_CLEAR_ALL (state) {
+      state.downloadList = []
+    },
+    // 同步下载记录
+    GET_DOWN_HISTORY (state, data) {
+      state.downloadList = data
     }
   },
   actions: {
@@ -150,12 +159,24 @@ const globalDownModule: Module<IGlobalDownType, any> = {
       if (res === 'failed') message.error('全部暂停操作失败')
       else res.forEach(uuid => commit('DOWN_PAUSE', uuid))
     },
+    async handleClearAll ({ commit }) {
+      const res = await DownApi.handleClearAll()
+      if (res) commit('DOWN_CLEAR_ALL')
+      else message.error('清除失败')
+    },
+    async handleGetDownHistoryList ({ commit }) {
+      const res = await DownApi.handleGetDownHistoryList()
+      console.log('下载记录', res)
+      if (res) commit('GET_DOWN_HISTORY', res)
+      else message.error('查询失败')
+    },
     testDown ({ dispatch }) {
       // const a = 'https://freetyst.nf.migu.cn/public/product9th/product42/2021/01/2612/2009年06月26日博尔普斯/歌曲下载/MP3_40_16_Stero/60054701938124543.mp3?key=49979f81e373c100&Tim=1619349468395&channelid=00&msisdn=e5582e73d8eb4ee2a1cee25e508c6ebb&CI=600547019382600902000006889306&F=000009'
       // const c = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/ljlYFjMmWelwE0Jc-Ts6m-OUJEV3.jpg'
 
       // const b = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2021/04/21/lr2fd1oOvlUlyMH3C0woCEXba27M.jpg'
-      const d = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/lkLb5AfrSqhmamZTsZ_XqzFDnSdv.jpg'
+      // const d = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/lkLb5AfrSqhmamZTsZ_XqzFDnSdv.jpg'
+      const d = 'https://download.jetbrains.com.cn/webstorm/WebStorm-2021.1.1.dmg'
       // const e = 'http://m701.music.126.net/20210511180820/520024b402e3943bfc2aaf19729b1b47/jdyyaac/0509/0158/065e/2c9b88ed8362529464e214ad79aeed7c.m4a'
       const list = [
         // {

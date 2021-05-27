@@ -34,4 +34,6 @@ export interface IDbType {
   getSysConfig: () => Promise<string>;
   getDownList: () => Promise<IDown[]>;
   insertDownItem: (downItem: IDown) => Promise<IDown>;
+  deleteAllDownItem: () => Promise<any>;
+  getAllDownItem: () => Promise<IDown[]>;
 }
