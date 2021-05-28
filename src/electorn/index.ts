@@ -1,15 +1,15 @@
-import { BrowserWindow } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import installExtension from 'electron-devtools-installer'
 import createAsarProtocol from './protocol'
 import MenuApp from './menu/index'
-import { LowdbSync } from 'lowdb'
 import initIpcEvent from './router'
+import type { IDbType } from '@/types/db'
 
 export default class ElectronApp {
   protected isDevToolInit = false // 是否已经启用开发工具
   protected win: BrowserWindow | null = null // 窗口
   protected menu: MenuApp | null = null
-  protected db: LowdbSync<any> | null = null
+  protected db: IDbType | null = null
 
   /**
    * @description 注入开发工具
@@ -27,6 +27,16 @@ export default class ElectronApp {
       }
       this.openDevTools()
     }
+  }
+
+  /**
+   *@description app 事件注册
+   */
+  protected async addLeas () {
+    app.on('window-all-closed', () => {
+      // this.db.a()
+      app.quit()
+    })
   }
 
   /**

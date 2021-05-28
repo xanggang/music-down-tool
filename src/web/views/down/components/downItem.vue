@@ -9,6 +9,7 @@
         <Icon icon="icon-zanting1" @click="handlePause" />
         <Icon icon="icon-shanchu1" @click="handleDelete"/>
         <Icon icon="icon-wenjianjia1" @click="handleOpenFileFolder"/>
+        <Icon icon="icon-wenjianjia1" @click="handleCancel"/>
         <!-- todo 复制链接 <Icon icon="icon-lianjie" />-->
       </div>
     </div>

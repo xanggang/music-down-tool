@@ -1,6 +1,7 @@
 import type Nedb from 'nedb'
 import type { IDownItemOptions } from './downTypes'
 import { IDownItemInfoType, IProgressParType } from './downTypes'
+import DownList from '@/electorn/db/downList'
 
 export interface IDBData {
   downloadFolder: string; // 用户的文件目录
@@ -28,12 +29,8 @@ export interface IUserConfig {
 export interface IDbType {
   userConfig: Nedb<IUserConfig>;
   sysConfig: Nedb<any>;
-  downList: Nedb<IDown[]>;
+  downList: DownList;
   playList: Nedb<any[]>;
 
-  getSysConfig: () => Promise<string>;
-  getDownList: () => Promise<IDown[]>;
-  insertDownItem: (downItem: IDown) => Promise<IDown>;
-  deleteAllDownItem: () => Promise<any>;
-  getAllDownItem: () => Promise<IDown[]>;
+  getSysConfig: () => any
 }

@@ -2,12 +2,12 @@
   <div class="down-manager-main">
     <DownMenu  v-model="downState"/>
     <div class="down-manager-container">
-      <div class="title-wrap" @click="testDown">
+      <div class="title-wrap">
         <div class="title">
           {{ filterDownState(downState) }}
         </div>
         <div class="operating-wrap">
-          <a-tooltip color="#00796B" title="全部开始">
+          <a-tooltip color="#00796B" title="全部开始" @click="testDown">
             <Icon icon="icon-bofang1" />
           </a-tooltip>
 

@@ -63,7 +63,7 @@ export default class DownFileController extends BaseController {
   @Ipc(Api.DownFileApi.V_DELETE_DOWN)
   async handleDelete (event: IpcMainEvent, uuid: string) {
     try {
-      const res = this.ctx.downLoadManager.onNeedDelete(uuid)
+      const res = await this.ctx.downLoadManager.onNeedDelete(uuid)
       if (res) event.returnValue = 'success'
     } catch (error) {
       event.returnValue = error.message

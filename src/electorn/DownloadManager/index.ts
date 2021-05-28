@@ -74,25 +74,16 @@ export class DownLoadManagerClass extends BaseController {
           isUserPause: false,
           state
         }
-        // 如果状态变更， 啧同步状态
+        // 如果状态变更， 则同步状态
         if (queueItem.state === 'waitdown' || state === 'interrupted') {
-          this.db.downList.update({ 'option.uuid': queueItem.uuid }, {
-            $set: {
-              'option.state': queueItem.state,
-              downItemInfo: downInfo
-            }
-          })
+          this.db.downList.updateDownItemStatus(queueItem.uuid, queueItem.state, downInfo)
         }
         queueItem.state = state
         queueItem.onProgress(progress, downInfo)
       })
 
       item.on('done', async (e: any, state: any) => {
-        this.db.downList.update({ 'option.uuid': queueItem.uuid }, {
-          $set: {
-            'option.state': state
-          }
-        })
+        this.db.downList.updateDownItemStatus(queueItem.uuid, queueItem.state)
         queueItem.onFinishedDownload({
           uuid: queueItem.uuid,
           url: item.getURL(),
@@ -129,7 +120,7 @@ export class DownLoadManagerClass extends BaseController {
       progressInfo: {},
       downItemInfo: {}
     }
-    await this.db.insertDownItem(item)
+    await this.db.downList.insertDownItem(item)
     webContents.downloadURL(option.url)
   }
 
@@ -162,9 +153,11 @@ export class DownLoadManagerClass extends BaseController {
    * @description 删除下载任务
    * @param uuid
    */
-  onNeedDelete (uuid: string) {
+  async onNeedDelete (uuid: string) {
+    console.log('onNeedDelete')
     try {
       const downloadItem = this.downInfoMap[uuid]
+      await this.db.downList.deleteDownItem(uuid)
       if (downloadItem) {
         delete this.downInfoMap[uuid]
       }
@@ -210,17 +203,26 @@ export class DownLoadManagerClass extends BaseController {
   }
 
   /**
+   * 取消全部任务
+   */
+  onCancelAll () {
+    Object.values(this.downInfoMap).forEach(downItem => {
+      downItem.cancel()
+    })
+  }
+
+  /**
    * 清除全部下载记录
    */
   async onClearAll () {
-    await this.db.deleteAllDownItem()
+    await this.db.downList.deleteAllDownItem()
   }
 
   /**
    * 获取下载记录， 一般用于启动的时候从数据库同步下载记录
    */
   async onGetDownHistoryList () {
-    return await this.db.getAllDownItem()
+    return await this.db.downList.getAllDownItem()
   }
 }
 
