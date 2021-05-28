@@ -134,37 +134,45 @@ const globalDownModule: Module<IGlobalDownType, any> = {
       commit('DOWN_SUCCESS', data)
       dispatch('limitDownCount')
     },
+
     handleDownPause ({ commit }, uuid) {
       const res = ipcRenderer.sendSync(Api.DownFileApi.V_PAUSE_DOWN, uuid)
       if (res === 'success') commit('DOWN_PAUSE', uuid)
       else message.error(res)
     },
+
     handleDownResume ({ commit }, uuid) {
       const res = ipcRenderer.sendSync(Api.DownFileApi.V_RESUME_DOWN, uuid)
       if (res === 'success') commit('DOWN_RESUME', uuid)
       else message.error(res)
     },
+
     handleDownDelete ({ commit }, uuid) {
       const res = ipcRenderer.sendSync(Api.DownFileApi.V_DELETE_DOWN, uuid)
       console.log({ res })
       if (res === 'success') commit('DOWN_DELETE', uuid)
       else message.error(res)
     },
+
     handleDownCancel ({ commit }, uuid) {
       const res = ipcRenderer.sendSync(Api.DownFileApi.V_CANCEL_DOWN, uuid)
       if (res === 'success') commit('DOWN_CANCEL', uuid)
       else message.error(res)
     },
+
+
     handlePauseAll ({ commit }) {
       const res: string[] | 'failed' = ipcRenderer.sendSync(Api.DownFileApi.V_PAUSE_ALL)
       if (res === 'failed') message.error('全部暂停操作失败')
       else res.forEach(uuid => commit('DOWN_PAUSE', uuid))
     },
+
     async handleClearAll ({ commit }) {
       const res = await DownApi.handleClearAll()
       if (res) commit('DOWN_CLEAR_ALL')
       else message.error('清除失败')
     },
+
     async handleGetDownHistoryList ({ commit }) {
       const res = await DownApi.handleGetDownHistoryList()
       console.log('下载记录', res)

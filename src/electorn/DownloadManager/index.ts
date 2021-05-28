@@ -45,7 +45,7 @@ export class DownLoadManagerClass extends BaseController {
       let receivedBytes = 0
 
       item.on('updated', (event: Event, state) => {
-        console.log({ state })
+        console.log('updated', state, item.isPaused())
         const currentReceivedBytes = item.getReceivedBytes() // 已经下载的字节数
         const speedValue = currentReceivedBytes - receivedBytes // 上次-这次=速度
         receivedBytes = currentReceivedBytes // 记录
@@ -63,6 +63,7 @@ export class DownLoadManagerClass extends BaseController {
         }
         const downInfo: IDownItemInfoType = {
           canResume: item.canResume(),
+          isUserPause: item.isPaused(),
           uuid: queueItem.uuid,
           savePath: item.getSavePath(), // 保存路径
           downURL: item.getURL(), // 下载地址
@@ -71,7 +72,6 @@ export class DownLoadManagerClass extends BaseController {
           fileName: item.getFilename(), // 下载文件名
           contentDisposition: item.getContentDisposition(), // 响应头中的Content-Disposition字段
           startTime: item.getStartTime(), // 开始下载时间
-          isUserPause: false,
           state
         }
         // 如果状态变更， 则同步状态
@@ -83,6 +83,7 @@ export class DownLoadManagerClass extends BaseController {
       })
 
       item.on('done', async (e: any, state: any) => {
+        console.log('done', state)
         this.db.downList.updateDownItemStatus(queueItem.uuid, queueItem.state)
         queueItem.onFinishedDownload({
           uuid: queueItem.uuid,

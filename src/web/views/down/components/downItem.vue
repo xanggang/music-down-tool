@@ -2,14 +2,14 @@
   <div class="down-item-container" v-on="bindMouseEvent">
     <div class="down-item-operating">
       <div :class="['name', {'is-unfold': hover }]">
-        {{ downItem.downItemInfo.fileName }}
+        {{ downItem.fileName }}
       </div>
       <div :class="['operating-wrap', {'active': hoverItem }]" v-on="bindItemMouseEvent">
-        <Icon icon="icon-bofang1" @click="handleResume" />
-        <Icon icon="icon-zanting1" @click="handlePause" />
-        <Icon icon="icon-shanchu1" @click="handleDelete"/>
+        <Icon icon="icon-bofang1" @click="handleDownResume" />
+        <Icon icon="icon-zanting1" @click="handleDownPause" />
+        <Icon icon="icon-shanchu1" @click="handleDownDelete"/>
         <Icon icon="icon-wenjianjia1" @click="handleOpenFileFolder"/>
-        <Icon icon="icon-wenjianjia1" @click="handleCancel"/>
+        <Icon icon="icon-wenjianjia1" @click="handleDownCancel"/>
         <!-- todo 复制链接 <Icon icon="icon-lianjie" />-->
       </div>
     </div>
@@ -31,13 +31,13 @@
 
 <script lang="ts">
 import useHover from '@/web/use/useHover'
-import { computed, defineComponent, PropType } from 'vue'
+import { computed, defineComponent, PropType, inject } from 'vue'
 import { useVendorToCn } from '@/web/use/toCn'
 import Icon from '@/web/components/Icon/index.vue'
-import { IStoreDownItemType } from '@/types/downTypes'
+import { IDownItemOptions } from '@/types/downTypes1'
 import Api from '@/electorn/enums/ApiEnums'
 import { message } from 'ant-design-vue'
-import { useStore } from '@/web/store'
+import type { WebDownManager } from '@/web/util/downManager'
 const { ipcRenderer } = window.require('electron')
 
 export default defineComponent({
@@ -45,7 +45,7 @@ export default defineComponent({
   components: { Icon },
   props: {
     downItem: {
-      type: Object as PropType<IStoreDownItemType>,
+      type: Object as PropType<IDownItemOptions>,
       required: true
     }
   },
@@ -53,8 +53,8 @@ export default defineComponent({
     const { hover, bindMouseEvent } = useHover()
     const { hover: hoverItem, bindMouseEvent: bindItemMouseEvent } = useHover()
 
-    const state = computed(() => props.downItem.downItemInfo.state)
-    const iconSrc = computed(() => props.downItem.downItemInfo.icon)
+    const state = computed(() => props.downItem.state)
+    const iconSrc = computed(() => props.downItem.icon || '')
 
     const progressStatus = computed(() => {
       if (state.value === 'progressing') return 'active'
@@ -62,13 +62,20 @@ export default defineComponent({
       return 'normal'
     })
 
+    const downManager = inject('downManager') as WebDownManager
+
     const {
-      handleOpenFileFolder,
-      handlePause,
-      handleResume,
-      handleDelete,
-      handleCancel
-    } = useDownItemManager(props.downItem)
+      handleDownPause,
+      handleDownResume,
+      handleDownDelete,
+      handleDownCancel
+    } = downManager
+
+    // 打开文件所在目录
+    const handleOpenFileFolder = () => {
+      const res = ipcRenderer.sendSync(Api.ToolApi.V_OPEN_FOLDER, props.downItem.savePath)
+      if (res === 'failed') message.error('文件夹不存在')
+    }
 
     return {
       hover,
@@ -82,52 +89,14 @@ export default defineComponent({
       progressStatus,
 
       handleOpenFileFolder,
-      handlePause,
-      handleResume,
-      handleDelete,
-      handleCancel
+      handleDownPause,
+      handleDownResume,
+      handleDownDelete,
+      handleDownCancel
     }
   }
 })
 
-function useDownItemManager (downItem: IStoreDownItemType) {
-  const store = useStore()
-  const uuid = computed(() => downItem.downItemInfo.uuid)
-
-  // 打开文件所在目录
-  const handleOpenFileFolder = () => {
-    const res = ipcRenderer.sendSync(Api.ToolApi.V_OPEN_FOLDER, downItem.downItemInfo.savePath)
-    if (res === 'failed') message.error('文件夹不存在')
-  }
-
-  // 暂停下载
-  const handlePause = () => {
-    store.dispatch('down/handleDownPause', uuid.value)
-  }
-
-  // 继续下载
-  const handleResume = () => {
-    store.dispatch('down/handleDownResume', uuid.value)
-  }
-
-  // 删除下载任务
-  const handleDelete = () => {
-    store.dispatch('down/handleDownDelete', uuid.value)
-  }
-
-  // 取消下载
-  const handleCancel = () => {
-    store.dispatch('down/handleDownCancel', uuid.value)
-  }
-
-  return {
-    handleOpenFileFolder,
-    handlePause,
-    handleResume,
-    handleDelete,
-    handleCancel
-  }
-}
 </script>
 
 <style scoped lang="less">

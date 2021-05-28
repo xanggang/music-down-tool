@@ -28,50 +28,38 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted } from 'vue'
+import { computed, defineComponent, ref, provide } from 'vue'
 import DownMenu from './DownMenu.vue'
 import DownItem from './components/downItem.vue'
 import Icon from '@/web/components/Icon/index.vue'
-import { useStore } from '@/web/store'
+import getDownManager from '@/web/util/downManager'
 
 export default defineComponent({
   name: 'downManagerMain',
   components: { DownMenu, DownItem, Icon },
   setup () {
+    const downManager = getDownManager()
+    provide('downManager', downManager)
+
+    const {
+      downHistoryList,
+      downloadState,
+      waitDownloadList,
+      handlePauseAll,
+      handleClearAll,
+      testDown
+    } = downManager
+
     const downState = ref('downing')
 
-    const store = useStore()
-    const waitDownloadList = computed(() => store.state.down.waitDownloadList)
-    const downloadingList = computed(() => store.state.down.downloadingList)
-    const downloadList = computed(() => store.state.down.downloadList)
-
     const downInfoList = computed(() => {
-      if (downState.value === 'downing') return downloadingList.value
+      if (downState.value === 'downing') return Object.values(downloadState.value)
       if (downState.value === 'padding') return waitDownloadList.value
-      if (downState.value === 'complete') return downloadList.value
+      if (downState.value === 'complete') return downHistoryList.value
       return []
     })
 
-    const testDown = () => {
-      store.dispatch('down/testDown')
-    }
-
-    onMounted(() => {
-      store.dispatch('down/handleGetDownHistoryList')
-    })
-
-    // 暂停全部下载
-    const handlePauseAll = () => {
-      store.dispatch('down/handlePauseAll')
-    }
-
-    // 清除
-    const handleClearAll = () => {
-      store.dispatch('down/handleClearAll')
-    }
-
     return {
-      downloadingList,
       downState,
       downInfoList,
       testDown,
