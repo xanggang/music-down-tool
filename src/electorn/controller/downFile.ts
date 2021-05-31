@@ -4,7 +4,8 @@ import BaseController from '@/electorn/controller/base'
 import { Ipc } from '@/electorn/router/decorator'
 import Api from '@/electorn/enums/ApiEnums'
 
-import type { IProgressParType, IDownQueueItem, IDownItemInfoType, IDownItemOptions } from '@/types/downTypes'
+import type { IDownQueueItem, IStoreDownItemType, IDownItemOptions }
+  from '@/types/downTypes1'
 
 export default class DownFileController extends BaseController {
   @Ipc(Api.DownFileApi.V_DOWN_FILE)
@@ -12,15 +13,11 @@ export default class DownFileController extends BaseController {
     console.log('添加下载任务', options)
     const downloadFolder = options.downloadFolder || await this.db.getSysConfig()
     const item: IDownQueueItem = {
-      uuid: options.uuid,
-      state: 'waitdown',
-      url: options.url,
-      type: options.type,
-      path: options.path,
-      fileName: options.fileName,
+      ...options,
       downloadFolder,
-      onProgress: (progressInfo: IProgressParType, downItemInfo: IDownItemInfoType) => {
-        this.setWebMsg(Api.DownFileApi.M_DOWN_PROGRESS, { downItemInfo, progressInfo })
+      onProgress: (storeDownItem: IStoreDownItemType) => {
+        console.log('onProgress')
+        this.setWebMsg(Api.DownFileApi.M_DOWN_PROGRESS, storeDownItem)
       },
       onFinishedDownload: (par: any) => {
         this.setWebMsg(Api.DownFileApi.M_DOWN_SUCCESS, par)

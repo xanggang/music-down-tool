@@ -1,7 +1,9 @@
 import path from 'path'
 import { DownloadItem } from 'electron'
 import BaseController from '@/electorn/controller/base'
-import type { IDownQueueItem, IProgressParType, IDownItemInfoType } from '@/types/downTypes'
+import _ from 'lodash'
+import type { IDownQueueItem, IProgressParType, IStoreDownItemType } from '@/types/downTypes1'
+import { IDownItemOptions } from '@/types/downTypes1'
 
 // 转换数据大小格式
 const bytesToSize = (bytes: number, decimals?: number) => {
@@ -61,25 +63,29 @@ export class DownLoadManagerClass extends BaseController {
           downloadedBytes: receivedBytes, // 已下载
           downloaded: bytesToSize(receivedBytes)
         }
-        const downInfo: IDownItemInfoType = {
-          canResume: item.canResume(),
-          isUserPause: item.isPaused(),
-          uuid: queueItem.uuid,
-          savePath: item.getSavePath(), // 保存路径
-          downURL: item.getURL(), // 下载地址
-          mimeType: item.getMimeType(), // MIME 类型
-          hasUserGesture: item.hasUserGesture(), // 是否具有用户手势
-          fileName: item.getFilename(), // 下载文件名
-          contentDisposition: item.getContentDisposition(), // 响应头中的Content-Disposition字段
-          startTime: item.getStartTime(), // 开始下载时间
-          state
-        }
-        // 如果状态变更， 则同步状态
-        if (queueItem.state === 'waitdown' || state === 'interrupted') {
-          this.db.downList.updateDownItemStatus(queueItem.uuid, queueItem.state, downInfo)
-        }
+
+        const oldState = queueItem.state
+
+        queueItem.progressInfo = progress
+        queueItem.canResume = item.canResume()
+        queueItem.isUserPause = item.isPaused()
+        queueItem.savePath = item.getSavePath()
+        queueItem.downURL = item.getURL()
+        queueItem.fileName = item.getFilename()
+        queueItem.startTime = item.getStartTime()
         queueItem.state = state
-        queueItem.onProgress(progress, downInfo)
+
+        if (oldState === 'waitdown' && state === 'progressing') {
+          // 这种情况属于这个项目第一次开始下载
+          // 需要保存当次的数据
+          const downOptions = _.omit(queueItem, 'onProgress', 'onFinishedDownload')
+          this.db.downList.updateDownItemStatus(queueItem.uuid, state, downOptions)
+        }
+        if (state === 'interrupted') {
+          // 被中断并且可以继续
+          this.db.downList.updateDownItemStatus(queueItem.uuid, state)
+        }
+        queueItem.onProgress(queueItem)
       })
 
       item.on('done', async (e: any, state: any) => {
@@ -116,12 +122,8 @@ export class DownLoadManagerClass extends BaseController {
   async addDownLoadTask (option: IDownQueueItem) {
     const webContents = this.getWebContents()
     this.queue.push(option)
-    const item = {
-      option,
-      progressInfo: {},
-      downItemInfo: {}
-    }
-    await this.db.downList.insertDownItem(item)
+    const a = _.omit(option, 'onProgress', 'onFinishedDownload')
+    await this.db.downList.insertDownItem(a)
     webContents.downloadURL(option.url)
   }
 

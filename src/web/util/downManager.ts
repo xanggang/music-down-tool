@@ -8,6 +8,19 @@ import Api from '@/electorn/enums/ApiEnums'
 
 const { ipcRenderer } = window.require('electron')
 
+function autoBind (target: any, name: string, descriptor: any) {
+  if (!name) {
+    throw new Error('this decorator must be used for class property')
+  } // 必须用于类属性，如果作用于class或其他不会有name参数
+  const oldValue = descriptor.value
+  descriptor.value = function () {
+    // eslint-disable-next-line no-prototype-builtins
+    return oldValue.bind(this)()
+    throw new Error('the symbol is not a instance')
+  }
+  return descriptor
+}
+
 interface IDownItemMap {
   [key: string]: IDownItemOptions;
 }
@@ -26,6 +39,7 @@ export class WebDownManager {
    * 添加下载相关的事件监听
    */
   addEventListener () {
+    console.log('addEventListener')
     ipcRenderer.on(Api.DownFileApi.M_DOWN_PROGRESS, (e: any, data: any) => {
       this.onDownProgress(data)
     })
@@ -48,6 +62,7 @@ export class WebDownManager {
    * @param url
    */
   handleAddDownFileTask (url: string) {
+    console.log(url)
     const { ext, name } = fileUtils.getFileNameTool(url)
     const queueItem: IDownItemOptions = {
       uuid: uuidv4(),
@@ -188,10 +203,13 @@ export class WebDownManager {
    */
   onDownProgress (data: IDownItemOptions) {
     const uuid = data.uuid
+    console.log('onDownProgress')
     this.downloadState.value[uuid] = data
   }
 
+  @autoBind
   testDown () {
+    console.log(this)
     // const a = 'https://freetyst.nf.migu.cn/public/product9th/product42/2021/01/2612/2009年06月26日博尔普斯/歌曲下载/MP3_40_16_Stero/60054701938124543.mp3?key=49979f81e373c100&Tim=1619349468395&channelid=00&msisdn=e5582e73d8eb4ee2a1cee25e508c6ebb&CI=600547019382600902000006889306&F=000009'
     // const c = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/ljlYFjMmWelwE0Jc-Ts6m-OUJEV3.jpg'
 

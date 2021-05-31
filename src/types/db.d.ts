@@ -16,10 +16,8 @@ export interface ISysConfig {
   sysConfig: any;
 }
 
-export interface IDown {
-  option: IDownItemOptions;
+export interface IDown extends IDownItemOptions{
   progressInfo: IProgressParType | {};
-  downItemInfo: IDownItemInfoType | {};
 }
 
 export interface IUserConfig {

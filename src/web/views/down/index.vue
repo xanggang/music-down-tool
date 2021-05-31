@@ -62,7 +62,7 @@ export default defineComponent({
     return {
       downState,
       downInfoList,
-      testDown,
+      testDown: testDown.bind(downManager),
       filterDownState,
       handlePauseAll,
       handleClearAll

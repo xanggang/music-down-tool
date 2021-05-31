@@ -1,11 +1,10 @@
-import { IDown } from '@/types/db'
 import fs from 'fs-extra'
 import Datastore from 'nedb'
 import path from 'path'
-import { IDownItemInfoType } from '@/types/downTypes'
+import type { IDownItemOptions } from '@/types/downTypes1'
 
 export default class DownListDb {
-  data: Nedb<IDown>
+  data: Nedb<IDownItemOptions>
 
   constructor () {
     const bastDir = global.userBasePath
@@ -22,26 +21,27 @@ export default class DownListDb {
   }
 
   /**
-   * 更新下载状态
+   * 更新下载状态 todo
    */
-  updateDownItemStatus (uuid: string, state: string, downItemInfo?: IDownItemInfoType) {
+  updateDownItemStatus (uuid: string, state: string, downItemInfo?: IDownItemOptions) {
+    if (downItemInfo) {
+      this.data.update({ uuid: uuid }, downItemInfo)
+      return
+    }
     const updateQuery: any = {
       $set: {
-        'option.state': state
+        state
       }
     }
-    if (downItemInfo) {
-      updateQuery.$set.downItemInfo = downItemInfo
-    }
-    this.data.update({ 'option.uuid': uuid }, updateQuery)
+    this.data.update({ uuid: uuid }, updateQuery)
   }
 
   /**
    * 下载列表
    */
-  getDownList (): Promise<IDown[]> {
+  getDownList (): Promise<IDownItemOptions[]> {
     return new Promise((resolve, reject) => {
-      this.data.find({}, (err: Error | null, docs: IDown[]) => {
+      this.data.find({}, (err: Error | null, docs: IDownItemOptions[]) => {
         if (err) reject(err)
         else resolve(docs)
       })
@@ -51,7 +51,7 @@ export default class DownListDb {
   /**
    * 添加一条下载记录
    */
-  insertDownItem (downItem: IDown) {
+  insertDownItem (downItem: IDownItemOptions) {
     return new Promise((resolve, reject) => {
       this.data.insert(downItem, (err: Error | null, docs) => {
         if (err) reject(err)
@@ -95,11 +95,11 @@ export default class DownListDb {
    */
   cancelAllDownItem () {
     const query = {
-      'option.state': { $in: ['waitdown', 'progressing'] }
+      state: { $in: ['waitdown', 'progressing'] }
     }
     const updateQuery = {
       $set: {
-        'option.state': 'cancelled'
+        state: 'cancelled'
       }
     }
     this.data.update(query, updateQuery, { multi: true })
@@ -110,7 +110,7 @@ export default class DownListDb {
    */
   getAllDownItem () {
     return new Promise((resolve, reject) => {
-      this.data.find({}, (err: Error | null, docs: IDown[]) => {
+      this.data.find({}, (err: Error | null, docs: IDownItemOptions[]) => {
         if (err) reject(err)
         resolve(docs)
       })

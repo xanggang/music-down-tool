@@ -38,7 +38,7 @@ export interface IDownItemOptions {
 // 下载任务队列
 export interface IDownQueueItem extends IDownItemOptions {
   downloadFolder: string;
-  onProgress: (data: IProgressParType, info: IDownItemInfoType) => void;
+  onProgress: (storeDownItem: IStoreDownItemType) => void;
   onFinishedDownload: (DownFinishedCallBackPar) => void;
 }
 
