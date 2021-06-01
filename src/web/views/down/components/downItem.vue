@@ -5,16 +5,41 @@
         {{ downItem.fileName }}
       </div>
       <div :class="['operating-wrap', {'active': hoverItem }]" v-on="bindItemMouseEvent">
-        <Icon icon="icon-bofang1" @click="handleDownResume" />
-        <Icon icon="icon-zanting1" @click="handleDownPause" />
-        <Icon icon="icon-shanchu1" @click="handleDownDelete"/>
-        <Icon icon="icon-wenjianjia1" @click="handleOpenFileFolder"/>
-        <Icon icon="icon-wenjianjia1" @click="handleDownCancel"/>
-        <!-- todo 复制链接 <Icon icon="icon-lianjie" />-->
+        <Icon
+          v-show="state === 'progressing' && downItem.canResume && downItem.isUserPause"
+          icon="icon-bofang1"
+          @click="handleDownResume(downItem.uuid)"
+        />
+        <Icon
+          v-show="state === 'progressing' && !downItem.isUserPause"
+          icon="icon-zanting1"
+          @click="handleDownPause(downItem.uuid)"
+        />
+        <!--        正在进行中， 直接取消任务-->
+        <Icon
+          v-show="['waitdown', 'progressing', 'interrupted'].includes(state)"
+          icon="icon-shanchu1"
+          @click="handleDownCancel(downItem.uuid)"
+        />
+        <!--        任务已经完成， 删除任务-->
+        <Icon
+          v-show="state === 'cancelled' || state === 'completed'"
+          icon="icon-shanchu1"
+          @click="handleDeleteHistory(downItem.uuid)"
+        />
+        <Icon
+          v-show="state === 'completed'"
+          icon="icon-wenjianjia1"
+          @click="handleOpenFileFolder"
+        />
+        <Icon
+          icon="icon-lianjie"
+          @click="handleCopyLink"
+        />
       </div>
     </div>
     <a-progress
-      :percent="downItem.progressInfo.progress"
+      :percent="progressStatus === 'success' ? 100 : downItem.progressInfo.progress"
       :status="progressStatus"
       :show-info="false"
       :stroke-color="{
@@ -23,8 +48,9 @@
       }"
     />
     <div class="progress-info">
-      <span>{{ downItem.progressInfo.speed }} / </span>
-      <span>total: {{ downItem.progressInfo.total }}</span>
+      <span v-show="state === 'progressing'">{{ downItem.progressInfo.speed }} / </span>
+      <span v-show="state === 'completed'">{{ downItem.total }} / </span>
+      <span>total: {{  downItem.total }}</span>
     </div>
   </div>
 </template>
@@ -37,6 +63,7 @@ import Icon from '@/web/components/Icon/index.vue'
 import { IDownItemOptions } from '@/types/downTypes1'
 import Api from '@/electorn/enums/ApiEnums'
 import { message } from 'ant-design-vue'
+import { useClipboard } from '@vueuse/core'
 import type { WebDownManager } from '@/web/util/downManager'
 const { ipcRenderer } = window.require('electron')
 
@@ -67,14 +94,20 @@ export default defineComponent({
     const {
       handleDownPause,
       handleDownResume,
-      handleDownDelete,
-      handleDownCancel
+      handleDownCancel,
+      handleDeleteHistory
     } = downManager
 
     // 打开文件所在目录
     const handleOpenFileFolder = () => {
       const res = ipcRenderer.sendSync(Api.ToolApi.V_OPEN_FOLDER, props.downItem.savePath)
       if (res === 'failed') message.error('文件夹不存在')
+    }
+
+    const { copy } = useClipboard()
+    const handleCopyLink = () => {
+      copy(props.downItem.downURL)
+      message.success('复制成功')
     }
 
     return {
@@ -89,10 +122,11 @@ export default defineComponent({
       progressStatus,
 
       handleOpenFileFolder,
-      handleDownPause,
-      handleDownResume,
-      handleDownDelete,
-      handleDownCancel
+      handleDownPause: handleDownPause.bind(downManager),
+      handleDownResume: handleDownResume.bind(downManager),
+      handleDownCancel: handleDownCancel.bind(downManager),
+      handleDeleteHistory: handleDeleteHistory.bind(downManager),
+      handleCopyLink
     }
   }
 })

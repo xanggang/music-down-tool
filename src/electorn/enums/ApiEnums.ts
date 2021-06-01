@@ -13,20 +13,23 @@ const DownFileApi = {
   V_DOWN_FILE: 'view:down_file',
   // 批量下载
   V_BATCH_DOWN_FILE: 'view:batch_down_file',
-  // 暂停下载
-  V_PAUSE_DOWN: 'view:pause_down',
-
-  // 全部暂停
-  V_PAUSE_ALL: 'view:pause_all',
 
   // 继续下载
   V_RESUME_DOWN: 'view:resume_down',
 
-  // 删除任务
-  V_DELETE_DOWN: 'view:delete_down',
+  // 暂停下载
+  V_PAUSE_DOWN: 'view:pause_down',
 
   // 取消任务
   V_CANCEL_DOWN: 'view:cancel_down',
+
+  V_DELETE_DOWN_HISTORY: 'view:delete_down_history',
+
+  // 全部暂停
+  V_PAUSE_ALL: 'view:pause_all',
+
+  // 取消全部
+  V_CANCEL_ALL: 'view:cancel_all',
 
   // 清空全部下载记录
   V_CLEAR_ALL_START: 'view:clear_all_start',

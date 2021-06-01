@@ -2169,18 +2169,18 @@
   resolved "https://npm.code.hzmantu.com/@vue%2fweb-component-wrapper/-/web-component-wrapper-1.2.0.tgz#bb0e46f1585a7e289b4ee6067dcc5a6ae62f1dd1"
   integrity sha512-Xn/+vdm9CjuC9p3Ae+lTClNutrVhsXpzxvoTXXtoys6kVRX9FkueSUAqSWAyZntmVLlR4DosBV4pH8y5Z/HbUw==
 
-"@vueuse/core@^4.11.0":
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/@vueuse/core/-/core-4.11.0.tgz#2fbfdbeafe7d0a975a901cb56de76226fc4bdf10"
-  integrity sha512-a2/NHE3LjZ73LKGU1Ef2mz11ilIxs4pRIv1OUf98Sfvg6+GqA3R2VzIExswVlU3555GYIErmmJDywEHLsyii6w==
+"@vueuse/core@^4.11.2":
+  version "4.11.2"
+  resolved "https://registry.yarnpkg.com/@vueuse/core/-/core-4.11.2.tgz#d4f54bd38e7c289c6f6357992c02423774cb26d9"
+  integrity sha512-4A17XvKXpMR6829EVWvrdSKEeAjTWaiC3+xh51KEtlyCwvWQwZ0xwKDrbMj+e15ANxjHrTw/0bJVaWDfPQt/Pw==
   dependencies:
-    "@vueuse/shared" "4.11.0"
+    "@vueuse/shared" "4.11.2"
     vue-demi "*"
 
-"@vueuse/shared@4.11.0":
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/@vueuse/shared/-/shared-4.11.0.tgz#d5c453ac1c15e513d625f8035ec22c7562fd8441"
-  integrity sha512-WKyOxTWuAiOLTp9Eg6RYabtZBSiJyt9EgFZEMD8fSlZ1FAckg0Ntya3HLfTDkPBjOqVe3pMdOsAbLwsU+7Fwyw==
+"@vueuse/shared@4.11.2":
+  version "4.11.2"
+  resolved "https://registry.yarnpkg.com/@vueuse/shared/-/shared-4.11.2.tgz#1d56e08937600e3e65abf76f27cb4a1bc182adfd"
+  integrity sha512-vTbTi6ou7ljH3CkKVoaIaCAoWB5T1ewSogpL6VnO1duMPNuiv7x8K/LunMbnTg4tVyt6QwaiCuEq/kyS6AUBRg==
   dependencies:
     vue-demi "*"
 

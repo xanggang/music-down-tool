@@ -39,13 +39,13 @@ export class WebDownManager {
    * 添加下载相关的事件监听
    */
   addEventListener () {
-    console.log('addEventListener')
     ipcRenderer.on(Api.DownFileApi.M_DOWN_PROGRESS, (e: any, data: any) => {
       this.onDownProgress(data)
     })
     ipcRenderer.on(Api.DownFileApi.M_DOWN_SUCCESS, (e: any, data: any) => {
       this.onDownSuccess(data)
     })
+    this.handleGetDownHistoryList()
   }
 
   /**
@@ -75,9 +75,12 @@ export class WebDownManager {
       downURL: '', // 下载地址
       isUserPause: false, // 是否暂停状态
       canResume: false, // 是否可以继续下载
-      progressInfo: {}
+      progressInfo: {},
+      total: '',
+      totalBytes: 0
     }
     this.waitDownloadList.value.push(queueItem)
+    this.limitDownCount()
   }
 
   /**
@@ -110,15 +113,6 @@ export class WebDownManager {
   }
 
   /**
-   * 暂停下载
-   * @param uuid
-   */
-  handleDownPause (uuid: string) {
-    const res = ipcRenderer.sendSync(Api.DownFileApi.V_PAUSE_DOWN, uuid)
-    if (res !== 'success') message.error(res)
-  }
-
-  /**
    * 恢复下载
    * @param uuid
    */
@@ -128,20 +122,19 @@ export class WebDownManager {
   }
 
   /**
-   * 删除正在下载的
+   * 暂停下载
    * @param uuid
    */
-  handleDownDelete (uuid: string) {
-    const res = ipcRenderer.sendSync(Api.DownFileApi.V_DELETE_DOWN, uuid)
-    if (res !== 'success') return message.error(res)
-    delete this.downloadState.value[uuid]
+  handleDownPause (uuid: string) {
+    const res = ipcRenderer.sendSync(Api.DownFileApi.V_PAUSE_DOWN, uuid)
+    if (res !== 'success') message.error(res)
   }
 
   /**
-   * 删除历史记录 todo: promise
+   * 删除历史记录
    */
   handleDeleteHistory (uuid: string) {
-    const res = ipcRenderer.sendSync(Api.DownFileApi.V_DELETE_DOWN, uuid)
+    const res = ipcRenderer.sendSync(Api.DownFileApi.V_DELETE_DOWN_HISTORY, uuid)
     if (res !== 'success') return message.error(res)
     const index = this.downHistoryList.value.findIndex(item => item.uuid === uuid)
     if (index < 0) return
@@ -155,6 +148,7 @@ export class WebDownManager {
   handleDownCancel (uuid: string) {
     const res = ipcRenderer.sendSync(Api.DownFileApi.V_CANCEL_DOWN, uuid)
     if (res !== 'success') return message.error(res)
+    delete this.downloadState.value[uuid]
   }
 
   /**
@@ -166,11 +160,12 @@ export class WebDownManager {
   }
 
   /**
-   * 取消全部下载 todo promise
+   * 清除下载记录
    */
   async handleClearAll () {
     const res = await DownApi.handleClearAll()
     if (!res) return message.error('清除失败')
+    this.downHistoryList.value = []
   }
 
   /**
@@ -203,13 +198,15 @@ export class WebDownManager {
    */
   onDownProgress (data: IDownItemOptions) {
     const uuid = data.uuid
-    console.log('onDownProgress')
+    if (data.state === 'interrupted' || data.state === 'cancelled') {
+      delete this.downloadState.value[uuid]
+      return
+    }
     this.downloadState.value[uuid] = data
   }
 
   @autoBind
   testDown () {
-    console.log(this)
     // const a = 'https://freetyst.nf.migu.cn/public/product9th/product42/2021/01/2612/2009年06月26日博尔普斯/歌曲下载/MP3_40_16_Stero/60054701938124543.mp3?key=49979f81e373c100&Tim=1619349468395&channelid=00&msisdn=e5582e73d8eb4ee2a1cee25e508c6ebb&CI=600547019382600902000006889306&F=000009'
     // const c = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/ljlYFjMmWelwE0Jc-Ts6m-OUJEV3.jpg'
 

@@ -21,7 +21,7 @@ export default class DownListDb {
   }
 
   /**
-   * 更新下载状态 todo
+   * 更新下载状态
    */
   updateDownItemStatus (uuid: string, state: string, downItemInfo?: IDownItemOptions) {
     if (downItemInfo) {
@@ -67,7 +67,7 @@ export default class DownListDb {
   deleteAllDownItem () {
     return new Promise((resolve, reject) => {
       const query = {
-        'option.state': { $in: ['completed', 'cancelled', 'interrupted'] }
+        state: { $in: ['completed', 'cancelled', 'interrupted'] }
       }
       this.data.remove(query, { multi: true }, (err: Error | null, docs) => {
         if (err) reject(err)
@@ -91,7 +91,7 @@ export default class DownListDb {
   }
 
   /**
-   * 取消全部下载记录
+   * 取消全部下载
    */
   cancelAllDownItem () {
     const query = {

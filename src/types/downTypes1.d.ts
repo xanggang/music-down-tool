@@ -32,6 +32,9 @@ export interface IDownItemOptions {
   isUserPause: boolean; // 是否暂停状态
   canResume: boolean; // 是否可以继续下载
 
+  totalBytes: number; // 全部
+  total: string;
+
   progressInfo: IProgressParType | {};
 }
 
@@ -54,9 +57,4 @@ export interface IProgressParType {
   total: string;
   downloadedBytes: number; // 已下载
   downloaded: string;
-}
-
-// vuex里的任务队列
-export interface IStoreDownItemType extends IDownQueueItem {
-  progressInfo: IProgressParType | {};
 }

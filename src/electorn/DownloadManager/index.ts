@@ -2,8 +2,7 @@ import path from 'path'
 import { DownloadItem } from 'electron'
 import BaseController from '@/electorn/controller/base'
 import _ from 'lodash'
-import type { IDownQueueItem, IProgressParType, IStoreDownItemType } from '@/types/downTypes1'
-import { IDownItemOptions } from '@/types/downTypes1'
+import type { IDownQueueItem, IProgressParType } from '@/types/downTypes1'
 
 // 转换数据大小格式
 const bytesToSize = (bytes: number, decimals?: number) => {
@@ -46,8 +45,11 @@ export class DownLoadManagerClass extends BaseController {
       const totalBytes = item.getTotalBytes()
       let receivedBytes = 0
 
+      queueItem.total = bytesToSize(totalBytes)
+      queueItem.totalBytes = totalBytes
+
       item.on('updated', (event: Event, state) => {
-        console.log('updated', state, item.isPaused())
+        console.log('updated', { state, canResume: item.canResume(), isPaused: item.isPaused() })
         const currentReceivedBytes = item.getReceivedBytes() // 已经下载的字节数
         const speedValue = currentReceivedBytes - receivedBytes // 上次-这次=速度
         receivedBytes = currentReceivedBytes // 记录
@@ -74,29 +76,39 @@ export class DownLoadManagerClass extends BaseController {
         queueItem.fileName = item.getFilename()
         queueItem.startTime = item.getStartTime()
         queueItem.state = state
+        const downOptions = _.omit(queueItem, 'onProgress', 'onFinishedDownload')
 
         if (oldState === 'waitdown' && state === 'progressing') {
           // 这种情况属于这个项目第一次开始下载
           // 需要保存当次的数据
-          const downOptions = _.omit(queueItem, 'onProgress', 'onFinishedDownload')
           this.db.downList.updateDownItemStatus(queueItem.uuid, state, downOptions)
         }
         if (state === 'interrupted') {
           // 被中断并且可以继续
           this.db.downList.updateDownItemStatus(queueItem.uuid, state)
         }
-        queueItem.onProgress(queueItem)
+        queueItem.onProgress(downOptions)
       })
 
-      item.on('done', async (e: any, state: any) => {
+      item.on('done', async (e: any, state) => {
         console.log('done', state)
-        this.db.downList.updateDownItemStatus(queueItem.uuid, queueItem.state)
-        queueItem.onFinishedDownload({
-          uuid: queueItem.uuid,
-          url: item.getURL(),
-          filePath,
-          state
-        })
+        this.db.downList.updateDownItemStatus(queueItem.uuid, state)
+        // 下载完成
+        if (state === 'completed') {
+          queueItem.onFinishedDownload({
+            uuid: queueItem.uuid,
+            url: item.getURL(),
+            filePath,
+            state
+          })
+        } else {
+          queueItem.state = state
+          queueItem.canResume = item.canResume()
+          queueItem.isUserPause = item.isPaused()
+          queueItem.progressInfo = {}
+          const downOptions = _.omit(queueItem, 'onProgress', 'onFinishedDownload')
+          queueItem.onProgress(downOptions)
+        }
         delete this.downInfoMap[queueItem.uuid]
       })
     }
@@ -153,15 +165,16 @@ export class DownLoadManagerClass extends BaseController {
   }
 
   /**
-   * @description 删除下载任务
+   * @description 接收到取消命令
    * @param uuid
    */
-  async onNeedDelete (uuid: string) {
-    console.log('onNeedDelete')
+  async onNeedCancel (uuid: string) {
+    console.log('onNeedCancel')
     try {
       const downloadItem = this.downInfoMap[uuid]
       await this.db.downList.deleteDownItem(uuid)
       if (downloadItem) {
+        this.downInfoMap[uuid].cancel()
         delete this.downInfoMap[uuid]
       }
       return true
@@ -170,21 +183,9 @@ export class DownLoadManagerClass extends BaseController {
     }
   }
 
-  /**
-   * @description 接收到取消命令
-   * @param uuid
-   */
-  onNeedCancel (uuid: string) {
-    const downloadItem = this.downInfoMap[uuid]
-
-    if (!downloadItem) {
-      throw new Error(`取消下载失败，${uuid}不存在`)
-    }
-
-    downloadItem.cancel()
-    delete this.downInfoMap[uuid]
-    return true
-  }
+  // async onDeleteHistory (uuid: string) {
+  //   this.db.downList.deleteHistory(uuid)
+  // }
 
   /**
    * 暂停全部任务

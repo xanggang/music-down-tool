@@ -64,8 +64,8 @@ export default defineComponent({
       downInfoList,
       testDown: testDown.bind(downManager),
       filterDownState,
-      handlePauseAll,
-      handleClearAll
+      handlePauseAll: handlePauseAll.bind(downManager),
+      handleClearAll: handleClearAll.bind(downManager)
     }
   }
 })

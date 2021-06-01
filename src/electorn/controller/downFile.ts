@@ -4,10 +4,12 @@ import BaseController from '@/electorn/controller/base'
 import { Ipc } from '@/electorn/router/decorator'
 import Api from '@/electorn/enums/ApiEnums'
 
-import type { IDownQueueItem, IStoreDownItemType, IDownItemOptions }
-  from '@/types/downTypes1'
+import type { IDownQueueItem, IDownItemOptions } from '@/types/downTypes1'
 
 export default class DownFileController extends BaseController {
+  /**
+   * 开始一个下载记录
+   */
   @Ipc(Api.DownFileApi.V_DOWN_FILE)
   async downFile (event: IpcMainEvent, options: IDownItemOptions) {
     console.log('添加下载任务', options)
@@ -15,7 +17,7 @@ export default class DownFileController extends BaseController {
     const item: IDownQueueItem = {
       ...options,
       downloadFolder,
-      onProgress: (storeDownItem: IStoreDownItemType) => {
+      onProgress: (storeDownItem: IDownItemOptions) => {
         console.log('onProgress')
         this.setWebMsg(Api.DownFileApi.M_DOWN_PROGRESS, storeDownItem)
       },
@@ -27,6 +29,9 @@ export default class DownFileController extends BaseController {
     event.returnValue = 'success'
   }
 
+  /**
+   * 获取文件图标
+   */
   @Ipc(Api.ToolApi.V_GET_FILE_ICON)
   async getFileIcon (event: IpcMainEvent, path: string) {
     try {
@@ -37,6 +42,9 @@ export default class DownFileController extends BaseController {
     }
   }
 
+  /**
+   * 暂停一个项目
+   */
   @Ipc(Api.DownFileApi.V_PAUSE_DOWN)
   async handlePause (event: IpcMainEvent, uuid: string) {
     try {
@@ -47,6 +55,9 @@ export default class DownFileController extends BaseController {
     }
   }
 
+  /**
+   * 恢复一个项目
+   */
   @Ipc(Api.DownFileApi.V_RESUME_DOWN)
   async handleResume (event: IpcMainEvent, uuid: string) {
     try {
@@ -57,16 +68,9 @@ export default class DownFileController extends BaseController {
     }
   }
 
-  @Ipc(Api.DownFileApi.V_DELETE_DOWN)
-  async handleDelete (event: IpcMainEvent, uuid: string) {
-    try {
-      const res = await this.ctx.downLoadManager.onNeedDelete(uuid)
-      if (res) event.returnValue = 'success'
-    } catch (error) {
-      event.returnValue = error.message
-    }
-  }
-
+  /**
+   * 取消一个项目
+   */
   @Ipc(Api.DownFileApi.V_CANCEL_DOWN)
   async handleCancel (event: IpcMainEvent, uuid: string) {
     try {
@@ -77,6 +81,22 @@ export default class DownFileController extends BaseController {
     }
   }
 
+  /**
+   * 删除历史记录
+   */
+  @Ipc(Api.DownFileApi.V_DELETE_DOWN_HISTORY)
+  async handleDeleteHistory (event: IpcMainEvent, uuid: string) {
+    try {
+      const res = await this.db.downList.deleteDownItem(uuid)
+      if (res) event.returnValue = 'success'
+    } catch (error) {
+      event.returnValue = error.message
+    }
+  }
+
+  /**
+   * 打开指定文件夹
+   */
   @Ipc(Api.ToolApi.V_OPEN_FOLDER)
   async openFolder (event: IpcMainEvent, path: string) {
     try {
@@ -90,6 +110,9 @@ export default class DownFileController extends BaseController {
     }
   }
 
+  /**
+   * 暂停全部项目
+   */
   @Ipc(Api.DownFileApi.V_PAUSE_ALL)
   async handlePauseAll (event: IpcMainEvent) {
     try {
@@ -100,10 +123,13 @@ export default class DownFileController extends BaseController {
     }
   }
 
+  /**
+   * 清除下载记录
+   */
   @Ipc(Api.DownFileApi.V_CLEAR_ALL_START)
   async handleClearAll (event: IpcMainEvent) {
     try {
-      this.ctx.downLoadManager.onClearAll()
+      await this.ctx.downLoadManager.onClearAll()
       event.sender.send(Api.DownFileApi.V_CLEAR_ALL_END, true)
     } catch (err) {
       console.error(err)
@@ -111,6 +137,22 @@ export default class DownFileController extends BaseController {
     }
   }
 
+  /**
+   * 取消全部任务
+   */
+  @Ipc(Api.DownFileApi.V_CANCEL_ALL)
+  async handleCancelAll (event: IpcMainEvent) {
+    try {
+      this.ctx.downLoadManager.onCancelAll()
+      event.returnValue = 'success'
+    } catch (err) {
+      event.returnValue = 'failed'
+    }
+  }
+
+  /**
+   * 获取下载记录
+   */
   @Ipc(Api.DownFileApi.V_GET_DOWN_LIST_START)
   async handleGetDownHistoryList (event: IpcMainEvent) {
     try {

@@ -148,10 +148,10 @@ const globalDownModule: Module<IGlobalDownType, any> = {
     },
 
     handleDownDelete ({ commit }, uuid) {
-      const res = ipcRenderer.sendSync(Api.DownFileApi.V_DELETE_DOWN, uuid)
-      console.log({ res })
-      if (res === 'success') commit('DOWN_DELETE', uuid)
-      else message.error(res)
+      // const res = ipcRenderer.sendSync(Api.DownFileApi.V_DELETE_DOWN, uuid)
+      // console.log({ res })
+      // if (res === 'success') commit('DOWN_DELETE', uuid)
+      // else message.error(res)
     },
 
     handleDownCancel ({ commit }, uuid) {

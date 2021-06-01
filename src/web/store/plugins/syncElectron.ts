@@ -16,10 +16,10 @@ export default function syncElectron (store: Store<any>) {
     store.commit('setting/SAVE_ELECTRON_CONFIG', data)
   })
 
-  ipcRenderer.on(Api.DownFileApi.M_DOWN_PROGRESS, function (e: any, data: any) {
-    store.commit('down/CHANGE_DOWN_PROGRESS', data)
-  })
-  ipcRenderer.on(Api.DownFileApi.M_DOWN_SUCCESS, function (e: any, data: any) {
-    store.dispatch('down/handleDownSuccess', data)
-  })
+  // ipcRenderer.on(Api.DownFileApi.M_DOWN_PROGRESS, function (e: any, data: any) {
+  //   store.commit('down/CHANGE_DOWN_PROGRESS', data)
+  // })
+  // ipcRenderer.on(Api.DownFileApi.M_DOWN_SUCCESS, function (e: any, data: any) {
+  //   store.dispatch('down/handleDownSuccess', data)
+  // })
 }
