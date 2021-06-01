@@ -21,7 +21,7 @@ export default class ElectronApp {
       // Install Vue Devtools
       try {
         console.log('下载vue crx 文件')
-        await installExtension('ljjemllljcmogpfapbkkighbhhppjdbg')
+        // await installExtension('ljjemllljcmogpfapbkkighbhhppjdbg')
       } catch (e) {
         console.error('Vue Devtools failed to install:', e.toString())
       }

@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import * as fileUtils from '@/web/util/fileUtil'
 import { message } from 'ant-design-vue'
 import { ref, Ref, toRaw } from 'vue'
-import type { IDownFinishedCallBackPar, IDownItemOptions } from '@/types/downTypes1'
+import type { IDownFinishedCallBackPar, IDownItemOptions } from '@/types/downTypes'
 import Api from '@/electorn/enums/ApiEnums'
 
 const { ipcRenderer } = window.require('electron')
@@ -211,8 +211,8 @@ export class WebDownManager {
     // const c = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/ljlYFjMmWelwE0Jc-Ts6m-OUJEV3.jpg'
 
     // const b = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2021/04/21/lr2fd1oOvlUlyMH3C0woCEXba27M.jpg'
-    // const d = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/lkLb5AfrSqhmamZTsZ_XqzFDnSdv.jpg'
-    const d = 'https://download.jetbrains.com.cn/webstorm/WebStorm-2021.1.1.dmg'
+    const d = 'https://cloud-dev.cdn-qn.hzmantu.com/upload_dev/2020/06/17/lkLb5AfrSqhmamZTsZ_XqzFDnSdv.jpg'
+    // const d = 'https://download.jetbrains.com.cn/webstorm/WebStorm-2021.1.1.dmg'
     // const e = 'http://m701.music.126.net/20210511180820/520024b402e3943bfc2aaf19729b1b47/jdyyaac/0509/0158/065e/2c9b88ed8362529464e214ad79aeed7c.m4a'
 
     this.handleBatchAddDownFileTask([d])

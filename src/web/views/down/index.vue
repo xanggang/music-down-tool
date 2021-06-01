@@ -23,6 +23,12 @@
       <div class="down-wrap">
         <DownItem v-for="item in downInfoList" :down-item="item" :key="item"/>
       </div>
+      <div class="bottom-tool">
+        <div @click="handleOpenSettingView">
+          <span>下载地址:</span>
+          <span>{{ downDir }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -33,6 +39,9 @@ import DownMenu from './DownMenu.vue'
 import DownItem from './components/downItem.vue'
 import Icon from '@/web/components/Icon/index.vue'
 import getDownManager from '@/web/util/downManager'
+import { useStore } from '@/web/store'
+import Api from '@/electorn/enums/ApiEnums'
+const { ipcRenderer } = window.require('electron')
 
 export default defineComponent({
   name: 'downManagerMain',
@@ -59,13 +68,23 @@ export default defineComponent({
       return []
     })
 
+    const store = useStore()
+    const downDir = computed(() => store.state.setting.sysSetting)
+    const handleOpenSettingView = () => {
+      const res = ipcRenderer.sendSync(Api.ConfigApi.V_CHANGE_DOWN_DIR)
+      console.log({ res })
+    }
+
     return {
       downState,
       downInfoList,
       testDown: testDown.bind(downManager),
       filterDownState,
       handlePauseAll: handlePauseAll.bind(downManager),
-      handleClearAll: handleClearAll.bind(downManager)
+      handleClearAll: handleClearAll.bind(downManager),
+
+      handleOpenSettingView,
+      downDir
     }
   }
 })
@@ -83,6 +102,7 @@ const filterDownState = (state: 'padding' | 'downing' | 'complete') => {
 
 <style scoped lang="less">
 @import '~@/web/style/palette.less';
+
 .down-manager-main {
   display: flex;
   align-items: flex-start;
@@ -133,9 +153,24 @@ const filterDownState = (state: 'padding' | 'downing' | 'complete') => {
 
     .down-wrap {
       width: 100%;
-      height: calc(100% - 34px);
+      height: calc(100% - 54px);
       overflow-y: auto;
       padding-right: 10px;
+    }
+  }
+
+  .bottom-tool {
+    width: 100%;
+    height: 20px;
+    bottom: 0;
+    display: flex;
+    align-content: center;
+    justify-content: flex-end;
+    font-size: 14px;
+    color: @divider-color;
+
+    & > {
+      cursor: pointer;
     }
   }
 }

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<audio id="audio" controls>
+    <source src="./data/music3.mp3" type="audio/mpeg">
+    您的浏览器不支持 audio 元素。
+</audio>
+
+
+<script>
+    const musicDom = document.getElementById('audio')
+    console.log(musicDom);
+
+
+    musicDom.load();//因为source标签不能直接更改路径，所以整个audio标签必须重新加载一次
+    musicDom.oncanplay = function () {
+        console.log("音乐时长", musicDom.duration);//音乐总时长
+        //处理时长
+        var time = musicDom.duration;
+        //分钟
+        var minute = time / 60;
+        var minutes = parseInt(minute);
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        //秒
+        var second = time % 60;
+        var seconds = Math.round(second);
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        console.log('处理音乐时长', minutes + "：" + seconds)
+    }
+
+</script>
+
+</body>
+</html>

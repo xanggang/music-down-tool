@@ -1,6 +1,5 @@
 import type Nedb from 'nedb'
-import type { IDownItemOptions } from './downTypes'
-import { IDownItemInfoType, IProgressParType } from './downTypes'
+import type { IDownItemOptions, IProgressParType } from './downTypes'
 import DownList from '@/electorn/db/downList'
 
 export interface IDBData {
@@ -30,5 +29,7 @@ export interface IDbType {
   downList: DownList;
   playList: Nedb<any[]>;
 
-  getSysConfig: () => any
+  getSysConfig: () => any;
+  getDownloadFolder: () => string;
+  changeDownloadFolder: (s: string) => any;
 }

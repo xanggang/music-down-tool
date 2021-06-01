@@ -17,7 +17,7 @@ export const menuList = [
   }
 ]
 
-export function filterDownState(state: 'waitdown' | 'progressing' | 'completed') {
+export function filterDownState (state: 'waitdown' | 'progressing' | 'completed') {
   const map = {
     waitdown: '等待下载',
     progressing: '下载中',

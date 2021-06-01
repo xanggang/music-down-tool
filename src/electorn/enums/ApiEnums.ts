@@ -4,7 +4,9 @@ const ConfigApi = {
   V_CHANG_SYS_SETTING_START: 'view:chang_sys_setting_start',
   V_CHANG_SYS_SETTING_END: 'view:chang_sys_setting_end',
   // 改变系统配置，这个是由主进程推送的
-  M_CHANG_SYS_SETTING: 'main:chang_sys_setting'
+  M_CHANG_SYS_SETTING: 'main:chang_sys_setting',
+  // 修改下载文件地址
+  V_CHANGE_DOWN_DIR: 'view:change_down_dir'
 }
 
 // 文件下载相关

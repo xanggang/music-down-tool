@@ -2,7 +2,7 @@ import Datastore from 'nedb'
 import path from 'path'
 import fs from 'fs-extra'
 import { app } from 'electron'
-import {  IUserConfig } from '@/types/db'
+import { IUserConfig } from '@/types/db'
 import DownList from './downList'
 
 export default class Db {
@@ -42,6 +42,7 @@ export default class Db {
       if (err) throw err
       if (docs.length === 0) {
         this.userConfig.insert({
+          key: 'CONFIG_MAIN',
           downloadFolder: app.getPath('userData')
         })
       }
@@ -51,13 +52,32 @@ export default class Db {
   /**
    * 获取系统配置
    */
-  getSysConfig (): Promise<string> {
+  getSysConfig (): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.userConfig.find({}, (err: Error | null, docs: IUserConfig[]) => {
+      this.userConfig.find({ key: 'CONFIG_MAIN' }, (err: Error | null, docs: IUserConfig[]) => {
         if (err) reject(err)
-        if (docs.length) resolve(docs[0].downloadFolder)
-        else resolve('')
+        if (docs.length) resolve(docs[0])
+        else resolve({})
       })
     })
+  }
+
+  async getDownloadFolder () {
+    const config = await this.getSysConfig()
+    if (!config) return ''
+    return config.downloadFolder
+  }
+
+  /**
+   * 修改下載儲存目錄
+   */
+  changeDownloadFolder (path: string) {
+    const query = { key: 'CONFIG_MAIN' }
+    const updateQuery: any = {
+      $set: {
+        downloadFolder: path
+      }
+    }
+    this.userConfig.update(query, updateQuery)
   }
 }

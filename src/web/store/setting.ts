@@ -4,7 +4,7 @@ import { Module } from 'vuex'
 export interface IGlobalSettingModule {
   downloadFolder: string;
   userBasePath: string;
-  sysConfig: string;
+  sysSetting: string;
 }
 
 const globalSettingModule: Module<any, any> = {

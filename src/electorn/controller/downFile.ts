@@ -4,7 +4,7 @@ import BaseController from '@/electorn/controller/base'
 import { Ipc } from '@/electorn/router/decorator'
 import Api from '@/electorn/enums/ApiEnums'
 
-import type { IDownQueueItem, IDownItemOptions } from '@/types/downTypes1'
+import type { IDownQueueItem, IDownItemOptions } from '@/types/downTypes'
 
 export default class DownFileController extends BaseController {
   /**
@@ -13,7 +13,7 @@ export default class DownFileController extends BaseController {
   @Ipc(Api.DownFileApi.V_DOWN_FILE)
   async downFile (event: IpcMainEvent, options: IDownItemOptions) {
     console.log('添加下载任务', options)
-    const downloadFolder = options.downloadFolder || await this.db.getSysConfig()
+    const downloadFolder = options.downloadFolder || await this.db.getDownloadFolder()
     const item: IDownQueueItem = {
       ...options,
       downloadFolder,

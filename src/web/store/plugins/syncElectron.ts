@@ -13,6 +13,7 @@ export default function syncElectron (store: Store<any>) {
   // 前端第一次启动的时候主动同步主进程配置
   ipcRenderer.send(Api.ConfigApi.V_CHANG_SYS_SETTING_START)
   ipcRenderer.on(Api.ConfigApi.V_CHANG_SYS_SETTING_END, function (e: any, data: any) {
+    console.log(data)
     store.commit('setting/SAVE_ELECTRON_CONFIG', data)
   })
 

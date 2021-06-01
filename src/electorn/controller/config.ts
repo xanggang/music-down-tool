@@ -9,6 +9,22 @@ import DialogUtil from '@/electorn/util/dialogUtil'
  */
 export default class ConfigController extends BaseController {
   /**
+   * 修改下載地址
+   * @param event
+   */
+  @Ipc(Api.ConfigApi.V_CHANGE_DOWN_DIR)
+  changeDownloadFolder (event: IpcMainEvent) {
+    const request = DialogUtil.getFolderPath()
+    if (!request) {
+      event.returnValue = ''
+      return
+    }
+    this.db.changeDownloadFolder(request)
+    this.setWebMsg(Api.ConfigApi.V_CHANG_SYS_SETTING_END, request)
+    event.returnValue = request
+  }
+
+  /**
    * 获取一个文件夹的路径
    * @param event
    */
@@ -28,10 +44,8 @@ export default class ConfigController extends BaseController {
    */
   @Ipc(Api.ConfigApi.V_CHANG_SYS_SETTING_START)
   async onSendSysConfig (event: IpcMainEvent) {
-    const config = await this.ctx.db.getSysConfig()
-    console.log({ config })
+    const config = await this.ctx.db.getDownloadFolder()
     event.sender.send(Api.ConfigApi.V_CHANG_SYS_SETTING_END, config)
-    // this.setWebMsg(Api.ConfigApi.M_CHANG_SYS_SETTING, config)
   }
 
   /**

@@ -2,16 +2,16 @@ import { createStore, Store, useStore as useBaseStore, createLogger } from 'vuex
 import { InjectionKey } from 'vue'
 
 import syncElectron from './plugins/syncElectron'
-import setting from './setting'
-import down, { IGlobalDownType } from './down'
+import setting, { IGlobalSettingModule } from './setting'
 
 interface IStoreGlobalType {
-  down: IGlobalDownType;
+  key?: any;
+  setting: IGlobalSettingModule;
 }
 
 const storeMain = createStore<any>({
   modules: {
-    setting, down
+    setting
   },
   plugins: [createLogger(), syncElectron]
 })

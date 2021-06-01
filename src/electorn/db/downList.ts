@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import Datastore from 'nedb'
 import path from 'path'
-import type { IDownItemOptions } from '@/types/downTypes1'
+import type { IDownItemOptions } from '@/types/downTypes'
 
 export default class DownListDb {
   data: Nedb<IDownItemOptions>

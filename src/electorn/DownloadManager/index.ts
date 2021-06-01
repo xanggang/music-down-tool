@@ -2,7 +2,7 @@ import path from 'path'
 import { DownloadItem } from 'electron'
 import BaseController from '@/electorn/controller/base'
 import _ from 'lodash'
-import type { IDownQueueItem, IProgressParType } from '@/types/downTypes1'
+import type { IDownQueueItem, IProgressParType } from '@/types/downTypes'
 
 // 转换数据大小格式
 const bytesToSize = (bytes: number, decimals?: number) => {

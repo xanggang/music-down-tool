@@ -9,14 +9,14 @@
     <!--    >-->
     <!--      {{item.name }}-->
     <!--    </div>-->
-<!--    <audio controls>-->
-<!--      <audio-->
-<!--        class="play"-->
-<!--        autoplay-->
-<!--        src="https://www.runoob.com/try/demo_source/horse.mp3"-->
-<!--        type="audio/mpeg"-->
-<!--      ></audio>-->
-<!--    </audio>-->
+    <!--    <audio controls>-->
+    <!--      <audio-->
+    <!--        class="play"-->
+    <!--        autoplay-->
+    <!--        src="https://www.runoob.com/try/demo_source/horse.mp3"-->
+    <!--        type="audio/mpeg"-->
+    <!--      ></audio>-->
+    <!--    </audio>-->
 
     <!--    <a-button @click="handlePlay">当时的</a-button>-->
 

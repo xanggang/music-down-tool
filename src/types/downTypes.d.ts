@@ -1,4 +1,5 @@
-export type IDownStatusType = 'waitdown' | 'progressing' | 'completed' | 'cancelled' | 'interrupted';
+export type IDownStatusType = 'waitdown' | 'progressing' | 'completed'
+  | 'cancelled' | 'interrupted';
 
 // 下载完成的回调
 export interface IDownFinishedCallBackPar {
@@ -18,19 +19,29 @@ export interface IDownFinishedCallBackPar {
 export interface IDownItemOptions {
   uuid: string;
   url: string;
-  type: string;
   path: string;
-  fileName: string;
+  fileName: string; // 发起下载的时候的名字
+  downFileName: string; // 下载中可能被更换的名字
   downloadFolder?: string;
-  // 区别于IDownItemInfoType的state， 这里的是整体的状态
-  // 在IDownItemInfoType还不在的时候，这个就已经存在了
   state: IDownStatusType;
+
+  savePath: string; // 保存路径
+  downURL: string; // 下载地址
+  startTime?: number; // 开始下载时间
+  icon?: string; // 文件图标
+  isUserPause: boolean; // 是否暂停状态
+  canResume: boolean; // 是否可以继续下载
+
+  totalBytes: number; // 全部
+  total: string;
+
+  progressInfo: IProgressParType | {};
 }
 
 // 下载任务队列
 export interface IDownQueueItem extends IDownItemOptions {
   downloadFolder: string;
-  onProgress: (data: IProgressParType, info: IDownItemInfoType) => void;
+  onProgress: (storeDownItem: IStoreDownItemType) => void;
   onFinishedDownload: (DownFinishedCallBackPar) => void;
 }
 
@@ -46,27 +57,4 @@ export interface IProgressParType {
   total: string;
   downloadedBytes: number; // 已下载
   downloaded: string;
-}
-
-// 下载信息
-export interface IDownItemInfoType {
-  uuid: string;
-  savePath: string; // 保存路径
-  downURL: string; // 下载地址
-  mimeType: string; // MIME 类型
-  hasUserGesture: boolean; // 是否具有用户手势
-  fileName: string; // 下载文件名
-  contentDisposition: string; // 响应头中的Content-Disposition字段
-  startTime: number; // 开始下载时间
-  state: IDownStatusType;
-  icon?: string; // 文件图标
-  isUserPause: boolean; // 是否暂停状态
-  canResume: boolean; // 是否可以继续下载
-}
-
-// vuex里的任务队列
-export interface IStoreDownItemType {
-  option: IDownItemOptions;
-  progressInfo: IProgressParType;
-  downItemInfo: IDownItemInfoType;
 }
