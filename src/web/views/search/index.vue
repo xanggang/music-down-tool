@@ -5,6 +5,9 @@
       <a-button @click="onSearch" class="search-button">搜索</a-button>
     </div>
     <div class="search-container">
+      <div class="spin-wrap" v-if="loading">
+        <Spin></Spin>
+      </div>
       <SongList v-if="songList.length">
         <SongItem
           v-for="(item, index) in songList"
@@ -12,7 +15,6 @@
           :song="item"
           @down-song="handleDownSong"
         ></SongItem>
-
         <a-pagination
           v-model:current="current"
           :page-size="50"
@@ -28,6 +30,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue'
+import { Spin } from 'ant-design-vue'
 import SongList from './components/SongList.vue'
 import SongItem from './components/SongItem.vue'
 import Plate from '@/web/components/plate/index.vue'
@@ -38,7 +41,7 @@ import type { ISongListInfoTypes } from '@/types/playListTypes'
 
 export default defineComponent({
   name: 'SearchMain',
-  components: { SongList, SongItem, Plate },
+  components: { SongList, SongItem, Plate, Spin },
   setup () {
     const state = reactive<any>({
       keyword: '',
@@ -116,6 +119,14 @@ export default defineComponent({
     width: 100%;
     height: calc(100% - 50px);
     overflow: hidden;
+
+    .spin-wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 </style>

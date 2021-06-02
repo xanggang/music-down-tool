@@ -29,14 +29,9 @@ export default defineComponent({
     const router = useRouter()
     const menuList = [
       {
-        name: 'index',
-        path: '/index',
-        icon: 'icon-xiangji'
-      },
-      {
-        name: 'about',
-        path: '/about',
-        icon: 'icon-yinleku'
+        name: 'down',
+        path: '/down',
+        icon: 'icon-xiazai'
       },
       {
         name: 'search',
@@ -47,7 +42,7 @@ export default defineComponent({
 
     const state = reactive({
       menuList,
-      active: 'index',
+      active: 'down',
       activeIndex: 0
     })
 
@@ -67,3 +62,11 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="less" scoped>
+.layer-menu {
+  img {
+    -webkit-user-drag: none;
+  }
+}
+</style>
