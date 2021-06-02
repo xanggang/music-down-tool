@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import * as fileUtils from '@/web/util/fileUtil'
 import { message } from 'ant-design-vue'
 import { ref, Ref, toRaw } from 'vue'
-import type { IDownFinishedCallBackPar, IDownItemOptions } from '@/types/downTypes'
+import type { IDownFinishedCallBackPar, IDownItemOptions, IDownInfo } from '@/types/downTypes'
 import Api from '@/electorn/enums/ApiEnums'
 
 const { ipcRenderer } = window.require('electron')
@@ -59,17 +59,16 @@ export class WebDownManager {
 
   /**
    * 向任务队列添加一个任务
-   * @param url
+   * @param downInfo
    */
-  handleAddDownFileTask (url: string) {
-    console.log(url)
-    const { ext, name } = fileUtils.getFileNameTool(url)
+  handleAddDownFileTask (downInfo: IDownInfo) {
+    const { ext, name } = fileUtils.getFileNameTool(downInfo.url)
     const queueItem: IDownItemOptions = {
       uuid: uuidv4(),
       state: 'waitdown',
-      url: url,
+      url: downInfo.url,
       path: 'electronDown',
-      fileName: name + ext,
+      fileName: (downInfo.fileName || name) + ext,
       downFileName: '',
       savePath: '', // 保存路径
       downURL: '', // 下载地址
@@ -87,7 +86,7 @@ export class WebDownManager {
    * 批量添加下载任务
    * @param fileList
    */
-  handleBatchAddDownFileTask (fileList: string[]) {
+  handleBatchAddDownFileTask (fileList: IDownInfo[]) {
     fileList.forEach((file) => {
       this.handleAddDownFileTask(file)
     })
@@ -189,6 +188,7 @@ export class WebDownManager {
     queueItem.icon = icon
     this.downHistoryList.value.push(queueItem)
     delete this.downloadState.value[data.uuid]
+    message.success(`${queueItem.fileName}下载完成`)
     this.limitDownCount()
     console.log('下载完成')
   }
@@ -215,7 +215,9 @@ export class WebDownManager {
     // const d = 'https://download.jetbrains.com.cn/webstorm/WebStorm-2021.1.1.dmg'
     // const e = 'http://m701.music.126.net/20210511180820/520024b402e3943bfc2aaf19729b1b47/jdyyaac/0509/0158/065e/2c9b88ed8362529464e214ad79aeed7c.m4a'
 
-    this.handleBatchAddDownFileTask([d])
+    this.handleBatchAddDownFileTask([{
+      url: d
+    }])
   }
 }
 

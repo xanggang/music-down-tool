@@ -49,7 +49,6 @@ export class DownLoadManagerClass extends BaseController {
       queueItem.totalBytes = totalBytes
 
       item.on('updated', (event: Event, state) => {
-        console.log('updated', { state, canResume: item.canResume(), isPaused: item.isPaused() })
         const currentReceivedBytes = item.getReceivedBytes() // 已经下载的字节数
         const speedValue = currentReceivedBytes - receivedBytes // 上次-这次=速度
         receivedBytes = currentReceivedBytes // 记录
@@ -73,7 +72,7 @@ export class DownLoadManagerClass extends BaseController {
         queueItem.isUserPause = item.isPaused()
         queueItem.savePath = item.getSavePath()
         queueItem.downURL = item.getURL()
-        queueItem.fileName = item.getFilename()
+        queueItem.downFileName = item.getFilename()
         queueItem.startTime = item.getStartTime()
         queueItem.state = state
         const downOptions = _.omit(queueItem, 'onProgress', 'onFinishedDownload')

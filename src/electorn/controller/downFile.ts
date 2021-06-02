@@ -18,7 +18,6 @@ export default class DownFileController extends BaseController {
       ...options,
       downloadFolder,
       onProgress: (storeDownItem: IDownItemOptions) => {
-        console.log('onProgress')
         this.setWebMsg(Api.DownFileApi.M_DOWN_PROGRESS, storeDownItem)
       },
       onFinishedDownload: (par: any) => {

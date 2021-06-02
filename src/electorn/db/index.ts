@@ -64,6 +64,8 @@ export default class Db {
 
   async getDownloadFolder () {
     const config = await this.getSysConfig()
+    console.log('-------')
+    console.log(config.downloadFolder)
     if (!config) return ''
     return config.downloadFolder
   }

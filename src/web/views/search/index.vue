@@ -32,6 +32,7 @@ import SongList from './components/SongList.vue'
 import SongItem from './components/SongItem.vue'
 import Plate from '@/web/components/plate/index.vue'
 import * as Api from '@/web/api'
+import getDownManager from '@/web/util/downManager'
 
 import type { ISongListInfoTypes } from '@/types/playListTypes'
 
@@ -63,19 +64,25 @@ export default defineComponent({
       await searchSong()
     }
 
+    const downManager = getDownManager()
+
     const handleDownSong = async (song: ISongListInfoTypes) => {
       const res = await Api.getSongDetail1({
         id: song.id,
         vendor: song.vendor
       })
 
-      const url = await Api.getSongPlayerUrl({
+      const info = await Api.getSongPlayerUrl({
         id: song.id,
         vendor: song.vendor
       })
 
-      console.log(res)
-      console.log({ url })
+      const downInfo = {
+        url: info.url,
+        fileName: res.name
+      }
+
+      downManager.handleAddDownFileTask(downInfo)
     }
 
     return {

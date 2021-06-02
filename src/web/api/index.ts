@@ -71,8 +71,8 @@ export async function getSongDetail1 ({ id, vendor }: ISearchParams): Promise<mu
  * @param id
  * vendor
  */
-export async function getSongPlayerUrl ({ id, vendor }: ISearchParams): Promise<string> {
-  return await base<string>(APi.SearchSongApi.V_GET_PLAYER_URL_START,
+export async function getSongPlayerUrl ({ id, vendor }: ISearchParams): Promise<{url: string}> {
+  return await base<{url: string}>(APi.SearchSongApi.V_GET_PLAYER_URL_START,
     APi.SearchSongApi.V_GET_PLAYER_URL_END,
     { id, vendor })
 }

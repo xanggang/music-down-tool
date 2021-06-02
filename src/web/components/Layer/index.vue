@@ -7,7 +7,13 @@
       <Menu></Menu>
       <wave>
         <div class="layer-router-container">
-          <router-view/>
+          <router-view v-slot="{ Component }">
+            <transition mode="out-in">
+              <keep-alive>
+                <component :is="Component" />
+              </keep-alive>
+            </transition>
+          </router-view>
         </div>
       </wave>
     </div>
@@ -15,10 +21,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import Menu from './Menu.vue'
-// import wave from '../../views/music/index.vue'
 import wave from './bg.vue'
+
 export default defineComponent({
   name: 'LayerIndex',
   components: { Menu, wave }

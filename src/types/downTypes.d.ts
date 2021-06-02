@@ -1,6 +1,11 @@
 export type IDownStatusType = 'waitdown' | 'progressing' | 'completed'
   | 'cancelled' | 'interrupted';
 
+export interface IDownInfo {
+  url: string;
+  fileName?: string;
+}
+
 // 下载完成的回调
 export interface IDownFinishedCallBackPar {
   uuid: string;
@@ -41,7 +46,7 @@ export interface IDownItemOptions {
 // 下载任务队列
 export interface IDownQueueItem extends IDownItemOptions {
   downloadFolder: string;
-  onProgress: (storeDownItem: IStoreDownItemType) => void;
+  onProgress: (storeDownItem: IDownItemOptions) => void;
   onFinishedDownload: (DownFinishedCallBackPar) => void;
 }
 
